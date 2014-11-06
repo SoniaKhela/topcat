@@ -1,9 +1,13 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Catalogue.Data;
+using Catalogue.Data.Repository;
 using Catalogue.Web.Logging;
 using Newtonsoft.Json.Serialization;
 using Raven.Client;
@@ -33,6 +37,22 @@ namespace Catalogue.Web
                 new CamelCasePropertyNamesContractResolver();
             InitializeDataStore();
             RegisterGlobalFilters(GlobalFilters.Filters);
+
+            //todo: temp method
+            DoSomeDbShit();
+
+        }
+
+        private void DoSomeDbShit()
+        {
+            using (var tc = new SqlContext())
+            {
+                var cows = (from c in tc.Cows
+                            select c).Count();
+
+                Debug.Print(cows.ToString());
+            }
+
         }
 
         private static void ConfigWebApi(HttpConfiguration config)
@@ -60,6 +80,7 @@ namespace Catalogue.Web
             {
                 // use in-memory database for development
                 DocumentStore = DatabaseFactory.Create(DatabaseFactory.DatabaseConnectionType.InMemory);
+
             }
             else
             {

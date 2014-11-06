@@ -1,5 +1,6 @@
 ﻿using Catalogue.Data.Import;
 using Catalogue.Data.Import.Mappings;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Write;
 using Catalogue.Gemini.Write;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace Catalogue.Tests.Explicit.Catalogue.Import
             using (IDocumentSession db = store.OpenSession())
             {
                 var importer = new Importer<ActivitiesMapping>(new FileSystem(),
-                    new RecordService(db, new RecordValidator(new VocabularyService(db, new VocabularyValidator(db))),new VocabularyService(db, new VocabularyValidator(db))));
+                    new RecordService(db, new RecordValidator(new VocabularyService(db, new VocabularyValidator(db))),new VocabularyService(db, new VocabularyValidator(db)),new SqlContext()));
                 importer.Import(@"C:\Work\pressures-data\Human_Activities_Metadata_Catalogue.csv");
             }
         }

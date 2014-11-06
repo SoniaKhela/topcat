@@ -34,6 +34,12 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.2.2\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.2.0.1\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
@@ -82,6 +88,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -111,11 +118,25 @@
     <Compile Include="Indexes\Records_SpatialIndex.cs" />
     <Compile Include="Indexes\Records_Search.cs" />
     <Compile Include="Indexes\VocabularySearchIndex.cs" />
+    <Compile Include="Migrations\201411061513287_InitialCreate.cs" />
+    <Compile Include="Migrations\201411061513287_InitialCreate.Designer.cs">
+      <DependentUpon>201411061513287_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411061526284_MetadataTableName.cs" />
+    <Compile Include="Migrations\201411061526284_MetadataTableName.Designer.cs">
+      <DependentUpon>201411061526284_MetadataTableName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411061630009_DateTime2FieldType.cs" />
+    <Compile Include="Migrations\201411061630009_DateTime2FieldType.Designer.cs">
+      <DependentUpon>201411061630009_DateTime2FieldType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Record.cs" />
     <Compile Include="Model\Security.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="Model\Validation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\SqlContext.cs" />
     <Compile Include="Seed\Seeder.cs" />
     <Compile Include="Test\InMemoryDatabaseHelper.cs" />
     <Compile Include="Test\RavenUtility.cs" />
@@ -123,7 +144,17 @@
     <Compile Include="Write\RecordValidator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Migrations\201411061513287_InitialCreate.resx">
+      <DependentUpon>201411061513287_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411061526284_MetadataTableName.resx">
+      <DependentUpon>201411061526284_MetadataTableName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411061630009_DateTime2FieldType.resx">
+      <DependentUpon>201411061630009_DateTime2FieldType.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Seed\mesh.csv" />
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Catalogue.Data.Import.Mappings;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Write;
 using Catalogue.Gemini.Model;
 using Catalogue.Gemini.Write;
@@ -75,7 +76,7 @@ namespace Catalogue.Data.Import
         public static Importer<T> CreateImporter<T>(IDocumentSession db) where T : IMapping, new()
         {
             var vocabService = new VocabularyService(db, new VocabularyValidator(db)); 
-            return new Importer<T>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService),vocabService));
+            return new Importer<T>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService),vocabService, new SqlContext()));
         }
     }
 

@@ -1,16 +1,20 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.Spatial;
 using Catalogue.Gemini.Model;
+using Raven.Imports.Newtonsoft.Json;
 
 namespace Catalogue.Data.Model
 {
     public class Record
     {
+        [Key]
         public Guid Id { get; set; }
 
         /// <summary>
         /// The UK Gemini metadata record. 
         /// </summary>
-        public Metadata Gemini  { get; set; }
+        public virtual Metadata Gemini  { get; set; }
 
         public string   Path     { get; set; }
         public bool     TopCopy  { get; set; }
@@ -31,6 +35,9 @@ namespace Catalogue.Data.Model
         /// used for spatial indexing.
         /// </summary>
         public string Wkt { get; set; }
+
+        [JsonIgnore]
+        public DbGeometry Geometry { get; set; }
 
         /// <summary>
         /// Used by the infrastructure when representing a particular revision of the record.

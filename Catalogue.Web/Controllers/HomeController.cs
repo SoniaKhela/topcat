@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
+using Catalogue.Data.Repository;
 
 namespace Catalogue.Web.Controllers.Home
 {
@@ -8,7 +10,9 @@ namespace Catalogue.Web.Controllers.Home
     {
         public ActionResult Index()
         {
+
             return RedirectPermanent("~/app");
+
         }
 
         

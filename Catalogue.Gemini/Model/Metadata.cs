@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Raven.Imports.Newtonsoft.Json;
 
 namespace Catalogue.Gemini.Model
 {
@@ -8,11 +9,13 @@ namespace Catalogue.Gemini.Model
     /// </summary>
     public class Metadata
     {
+        [JsonIgnore]
+        public int MetadataId { get; set; }
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string TopicCategory { get; set; }
-        public List<MetadataKeyword> Keywords { get; set; }
-        public TemporalExtent TemporalExtent { get; set; }
+        public virtual List<MetadataKeyword> Keywords { get; set; }
+        public virtual TemporalExtent TemporalExtent { get; set; }
         public DateTime DatasetReferenceDate { get; set; } // / this should be changed to a collection for creation/publication/revision
         public SupportedLanguage DatasetLanguage { get; set; }
         public string Lineage { get; set; }
@@ -20,17 +23,17 @@ namespace Catalogue.Gemini.Model
         public string ResourceLocator { get; set; }
         public string AdditionalInformationSource { get; set; }
         public string DataFormat { get; set; } // mesh uses MEDIN data format categories from http://vocab.ndg.nerc.ac.uk/client/vocabServer.jsp
-        public ResponsibleParty ResponsibleOrganisation { get; set; }
+        public virtual ResponsibleParty ResponsibleOrganisation { get; set; }
         public string LimitationsOnPublicAccess { get; set; }
         public string UseConstraints { get; set; }
         public string SpatialReferenceSystem { get; set; }
-        public List<Extent> Extent { get; set; } // support multiple locations; use same UI as keywords
+        public virtual List<Extent> Extent { get; set; } // support multiple locations; use same UI as keywords
         public DateTime MetadataDate { get; set; }
         public SupportedLanguage MetadataLanguage { get; set; }
         
-        public ResponsibleParty MetadataPointOfContact { get; set; }
+        public virtual ResponsibleParty MetadataPointOfContact { get; set; }
         public string ResourceType { get; set; }  // dataset | series | service
-        public BoundingBox BoundingBox { get; set; }
+        public virtual BoundingBox BoundingBox { get; set; }
 
         public Metadata()
         {
@@ -92,24 +95,33 @@ namespace Catalogue.Gemini.Model
             }
         }
 
+
+        [JsonIgnore]
+        public int MetadataKeywordId { get; set; }
         public string Value { get; set; }
         public string Vocab { get; set; }
     }
 
     public class Extent
     {
+        [JsonIgnore]
+        public int  ExtentId { get; set; }
         public string Value { get; set; }
         public string Authority { get; set; }
     }
 
     public class TemporalExtent
     {
+        [JsonIgnore]
+        public int TemporalExtentId { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
     }
 
     public class ResponsibleParty
     {
+        [JsonIgnore]
+        public int ResponsiblePartyId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
@@ -120,15 +132,12 @@ namespace Catalogue.Gemini.Model
     /// </summary>
     public class BoundingBox
     {
+        [JsonIgnore]
+        public int BoundingBoxId { get; set; }
         public decimal North { get; set; }
         public decimal South { get; set; }
         public decimal East { get; set; }
         public decimal West { get; set; }
     }
 
-    public class Citation
-    {
-        public string IdentifierUrl { get; set; }
-        public string Name { get; set; }
-    }
 }

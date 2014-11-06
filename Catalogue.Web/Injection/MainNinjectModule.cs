@@ -27,6 +27,8 @@ namespace Catalogue.Web.Injection
                 .SelectAllClasses()
                 .BindDefaultInterface());
 
+            //Rebind<IEntityContext>().To<EntityContext>().InRequestScope();
+
             // the raven document store should be an application-scoped singleton
             Bind<IDocumentStore>().ToMethod(x => WebApiApplication.DocumentStore);
 

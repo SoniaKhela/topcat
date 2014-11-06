@@ -6,6 +6,7 @@ using System.Reflection;
 using Catalogue.Data.Import;
 using Catalogue.Data.Import.Mappings;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Write;
 using Catalogue.Gemini.DataFormats;
 using Catalogue.Gemini.Model;
@@ -18,31 +19,39 @@ namespace Catalogue.Data.Seed
 {
     public class Seeder
     {
-        readonly IDocumentSession db;
-        readonly IRecordService recordService;
+        private readonly IDocumentSession db;
+        private readonly IRecordService recordService;
+        private readonly ISqlContext sqlDb;
 
-        public Seeder(IDocumentSession db, IRecordService recordService)
+        public Seeder(IDocumentSession db, IRecordService recordService, ISqlContext sqlDb)
         {
             this.db = db;
             this.recordService = recordService;
+            this.sqlDb = sqlDb;
         }
-         public static void importMesh(IDocumentStore store)
-        {
-            using (var db = store.OpenSession())
-            {
-                var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-                var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService),vocabService));
-                s.AddVocabularies();
-                s.AddMeshRecords();
-                db.SaveChanges();
-            }
-        }
+
+        //public static void importMesh(IDocumentStore store)
+        //{
+        //    using (var sqlDb = new SqlContext())
+        //    using (var db = store.OpenSession())
+        //    {
+        //        var vocabService = new VocabularyService(db, new VocabularyValidator(db));
+        //        var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService),vocabService, sqlDb));
+        //        s.AddVocabularies();
+        //        s.AddMeshRecords();
+
+        //        db.SaveChanges();
+        //        sqlDb.SaveChanges();
+        //    }
+        //}
+
         public static void Seed(IDocumentStore store)
         {
             using (var db = store.OpenSession())
             {
                 var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-                var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService), vocabService));
+                var sqlDb = new SqlContext();
+                var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService), vocabService, sqlDb), sqlDb);
                 s.AddVocabularies();
                 s.AddMeshRecords();
                 s.AddSimpleExampleRecord();
@@ -51,7 +60,9 @@ namespace Catalogue.Data.Seed
                 s.AddNonTopCopyRecord();
                 s.AddVariousDataFormatRecords();
                 s.AddBboxes();
+
                 db.SaveChanges();
+                sqlDb.SaveChanges();
             }
         }
 
@@ -64,11 +75,12 @@ namespace Catalogue.Data.Seed
             using (var reader = new StreamReader(s))
             {
                 var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService), vocabService));
+                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService), vocabService, sqlDb));
                 importer.SkipBadRecords = true; // todo remove when data export is finished
                 importer.Import(reader);
             }
         }
+
         Record MakeExampleSeedRecord()
         {
             return new Record
