@@ -19,13 +19,13 @@ namespace Catalogue.Data.Seed
 {
     public class Seeder
     {
-        private readonly IDocumentSession db;
+        private readonly IDocumentSession ravenDb;
         private readonly IRecordService recordService;
         private readonly ISqlContext sqlDb;
 
-        public Seeder(IDocumentSession db, IRecordService recordService, ISqlContext sqlDb)
+        public Seeder(IDocumentSession ravenDb, IRecordService recordService, ISqlContext sqlDb)
         {
-            this.db = db;
+            this.ravenDb = ravenDb;
             this.recordService = recordService;
             this.sqlDb = sqlDb;
         }
@@ -74,8 +74,8 @@ namespace Catalogue.Data.Seed
 
             using (var reader = new StreamReader(s))
             {
-                var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService), vocabService, sqlDb));
+                var vocabService = new VocabularyService(ravenDb, new VocabularyValidator(ravenDb));
+                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(ravenDb, new RecordValidator(vocabService), vocabService, sqlDb));
                 importer.SkipBadRecords = true; // todo remove when data export is finished
                 importer.Import(reader);
             }
@@ -204,7 +204,7 @@ namespace Catalogue.Data.Seed
                             new VocabularyKeyword {Id = Guid.NewGuid(), Value = "Marine Human Activities"}
                         }
                 };
-            this.db.Store(jnccCategories);
+            this.ravenDb.Store(jnccCategories);
         }
 
         // BigBoundingBoxWithNothingInside and SmallBox do not intersect

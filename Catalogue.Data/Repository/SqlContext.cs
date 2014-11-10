@@ -16,6 +16,8 @@ namespace Catalogue.Data.Repository
         DbSet<Metadata> Metadata { get; set; }
         DbSet<Extent> Extents { get; set; }
         DbSet<MetadataKeyword> MetadataKeywords { get; set; }
+
+        int SaveChanges();
     }
 
     public class SqlContext : DbContext, ISqlContext
