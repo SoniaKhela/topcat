@@ -9,17 +9,9 @@ using Catalogue.Gemini.Model;
 
 namespace Catalogue.Data.Repository
 {
-    public interface ISqlContext
-    {
-        DbSet<Record> Records { get; set; }
-        DbSet<Metadata> Metadata { get; set; }
-        DbSet<Extent> Extents { get; set; }
-        DbSet<MetadataKeyword> MetadataKeywords { get; set; }
 
-        int SaveChanges();
-    }
 
-    public class SqlContext : DbContext, ISqlContext
+    public class SqlContext : DbContext
     {
         public SqlContext()
             : base("TopcatDb")

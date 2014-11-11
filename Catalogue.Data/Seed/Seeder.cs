@@ -21,9 +21,9 @@ namespace Catalogue.Data.Seed
     {
         private readonly IDocumentSession ravenDb;
         private readonly IRecordService recordService;
-        private readonly ISqlContext sqlDb;
+        private readonly SqlContext sqlDb;
 
-        public Seeder(IDocumentSession ravenDb, IRecordService recordService, ISqlContext sqlDb)
+        public Seeder(IDocumentSession ravenDb, IRecordService recordService, SqlContext sqlDb)
         {
             this.ravenDb = ravenDb;
             this.recordService = recordService;
