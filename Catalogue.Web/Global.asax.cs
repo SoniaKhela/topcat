@@ -38,21 +38,6 @@ namespace Catalogue.Web
             InitializeDataStore();
             RegisterGlobalFilters(GlobalFilters.Filters);
 
-            //todo: temp method
-            DoSomeDbShit();
-
-        }
-
-        private void DoSomeDbShit()
-        {
-            using (var tc = new SqlContext())
-            {
-                var cows = (from c in tc.Cows
-                            select c).Count();
-
-                Debug.Print(cows.ToString());
-            }
-
         }
 
         private static void ConfigWebApi(HttpConfiguration config)

@@ -11,7 +11,6 @@ namespace Catalogue.Data.Repository
 {
     public interface ISqlContext
     {
-        DbSet<Cow> Cows { get; set; }
         DbSet<Record> Records { get; set; }
         DbSet<Metadata> Metadata { get; set; }
         DbSet<Extent> Extents { get; set; }
@@ -27,7 +26,6 @@ namespace Catalogue.Data.Repository
         {
         }
 
-        public DbSet<Cow> Cows { get; set; }
         public DbSet<Record> Records { get; set; }
         public DbSet<Metadata> Metadata { get; set; }
         public DbSet<Extent> Extents { get; set; }
@@ -43,9 +41,4 @@ namespace Catalogue.Data.Repository
 
     }
 
-    public class Cow
-    {
-        public int CowId { get; set; }
-        public string DynamicMoooWidget { get; set; }
-    }
 }
