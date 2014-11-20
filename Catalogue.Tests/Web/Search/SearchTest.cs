@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Catalogue.Gemini.Model;
 using Catalogue.Web.Search;
 using Catalogue.Web.Search.Service;
 using NUnit.Framework;

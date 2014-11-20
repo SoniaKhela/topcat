@@ -4,12 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.ResourceType;
-using Catalogue.Gemini.Roles;
-using Catalogue.Gemini.Templates;
-using Catalogue.Gemini.Vocabs;
-using Catalogue.Gemini.Write;
+using Catalogue.Data.ResourceType;
+using Catalogue.Data.Roles;
+using Catalogue.Data.Templates;
+using Catalogue.Data.Vocabs;
 using Catalogue.Utilities.Clone;
 using Catalogue.Utilities.Expressions;
 using Catalogue.Utilities.Text;
@@ -73,7 +71,7 @@ namespace Catalogue.Data.Write
                 result.Errors.Add("Publishable records must have a resource locator",
                     r => r.Status, r => r.Gemini.ResourceLocator);
             }
-            if (record.Validation == Validation.Gemini)
+            if (record.Validation == Catalogue.Data.Model.Validation.Gemini)
             {
                 GeminiValidation(record, result);
             }
@@ -277,13 +275,13 @@ namespace Catalogue.Data.Write
             //mostly for tests.
             if (record.Gemini.Keywords == null) return;
 
-            foreach (var vocabId in record.Gemini.Keywords.Select(k => k.Vocab).Distinct())
+            foreach (var vocabId in record.Gemini.Keywords.Select(k => k.VocabId).Distinct())
             {
                 var vocab = vocabService.Load(vocabId);
 
                 if (vocab != null && vocab.Controlled)
                 {
-                    foreach (var value in record.Gemini.Keywords.Where(k => k.Vocab == vocab.Id).Select(k => k.Value))
+                    foreach (var value in record.Gemini.Keywords.Where(k => k.VocabId == vocab.Id).Select(k => k.Value))
                     {
                         if (!vocab.Keywords.Select(x => x.Value).Contains(value))
                             recordValidationResult.Errors.Add(
@@ -572,7 +570,7 @@ namespace Catalogue.Data.Write
             {
                 Path = @"X:\some\path",
                 Gemini = Library.Example(),
-                Validation = Validation.Gemini,
+                Validation = Catalogue.Data.Model.Validation.Gemini,
             };
         }
 
@@ -600,7 +598,7 @@ namespace Catalogue.Data.Write
         [Test]
         public void should_not_allow_keyword_additions_to_controlled_vocabs()
         {
-            Record record = SimpleRecord().With(r => r.Gemini.Keywords.Add(new MetadataKeyword("value", "vocabUrl")));
+            Record record = SimpleRecord().With(r => r.Gemini.Keywords.Add(new Keyword("value", "vocabUrl")));
             mockVocabService.Setup(v => v.Load("vocabUrl"))
                             .Returns(
                                 (string vocab) =>
@@ -609,9 +607,9 @@ namespace Catalogue.Data.Write
                                         Controlled = true,
                                         Id = vocab,
                                         Keywords =
-                                            new List<VocabularyKeyword>
+                                            new List<Keyword>
                                                 {
-                                                    new VocabularyKeyword {Id = Guid.NewGuid(), Value = "notvalue"}
+                                                    new Keyword() {Value = "notvalue"}
                                                 }
                                     });
 

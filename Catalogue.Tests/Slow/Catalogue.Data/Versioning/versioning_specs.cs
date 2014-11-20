@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Catalogue.Data.Model;
+using Catalogue.Data.Templates;
 using Catalogue.Data.Test;
-using Catalogue.Gemini.Templates;
 using FluentAssertions;
 using NUnit.Framework;
 using Raven.Client;

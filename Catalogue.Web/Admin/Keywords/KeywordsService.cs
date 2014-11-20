@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
 using System.Web;
-using Catalogue.Gemini.Model;
+using Catalogue.Data.Model;
 
 namespace Catalogue.Web.Admin.Keywords
 { public interface IKeywordsService
 {
-        ICollection<MetadataKeyword> ReadAll();
-        ICollection<MetadataKeyword> ReadByValue(string value);
-        ICollection<MetadataKeyword> ReadByVocab(string vocab);
-        ICollection<MetadataKeyword> ReadByValueAndVocab(string value, string vocab);
+        ICollection<Keyword> ReadAll();
+        ICollection<Keyword> ReadByValue(string value);
+        ICollection<Keyword> ReadByVocab(string vocab);
+        ICollection<Keyword> ReadByValueAndVocab(string value, string vocab);
 
     }
 
@@ -24,22 +24,22 @@ namespace Catalogue.Web.Admin.Keywords
             _keywordsRepository = keywordsRepository;
         }
 
-        public ICollection<MetadataKeyword> ReadAll()
+        public ICollection<Keyword> ReadAll()
         {
             return _keywordsRepository.ReadAll();
         }
 
-        public ICollection<MetadataKeyword> ReadByValue(string value)
+        public ICollection<Keyword> ReadByValue(string value)
         {
             return _keywordsRepository.ReadByValue(value);
         }
 
-        public ICollection<MetadataKeyword> ReadByVocab(string vocab)
+        public ICollection<Keyword> ReadByVocab(string vocab)
         {
             return _keywordsRepository.ReadByVocab(vocab);
         }
 
-        public ICollection<MetadataKeyword> ReadByValueAndVocab(string value, string vocab)
+        public ICollection<Keyword> ReadByValueAndVocab(string value, string vocab)
         {
             // none of the above
             return _keywordsRepository.Read(value, vocab);

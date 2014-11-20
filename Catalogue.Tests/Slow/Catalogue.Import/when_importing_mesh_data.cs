@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catalogue.Data.DataFormats;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.DataFormats;
 using Catalogue.Utilities.Text;
 using FluentAssertions;
 using NUnit.Framework;
@@ -35,7 +35,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Import
         {
             // mesh data is categorised as 'Seabed Habitat Maps'
             imported.Count(r => r.Gemini.Keywords
-                .Any(k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Seabed Habitat Maps"))
+                .Any(k => k.VocabId == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Seabed Habitat Maps"))
                 .Should().Be(189);
         }
 

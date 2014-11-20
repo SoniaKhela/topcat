@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.Write;
+using Catalogue.Data.Model;
+using Catalogue.Data.Write;
 using Raven.Client;
 
 namespace Catalogue.Web.Controllers.Vocabularies
@@ -28,7 +28,7 @@ namespace Catalogue.Web.Controllers.Vocabularies
                     {
                         PublicationDate = DateTime.Now.ToString("MM-yyyy"),
                         Publishable = true,
-                        Keywords = new List<VocabularyKeyword>()
+                        Keywords = new List<Keyword>()
                     };
             }
 

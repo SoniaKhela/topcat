@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
+using Catalogue.Data.Repository;
 using Catalogue.Web.Code;
 using Catalogue.Web.Code.Account;
 using Ninject;
@@ -36,6 +37,8 @@ namespace Catalogue.Web.Injection
             Bind<IDocumentSession>()
                 .ToMethod(x => WebApiApplication.DocumentStore.OpenSession())
                 .InRequestScope();
+
+            Rebind<SqlContext>().ToSelf().InRequestScope();
 
             // convenience binding for the asp.net-provided current user
             // which is used by the once-per-request user context object

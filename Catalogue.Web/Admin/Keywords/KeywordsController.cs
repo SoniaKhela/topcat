@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Catalogue.Data.Model;
 using Catalogue.Data.Write;
-using Catalogue.Gemini.Model;
 using Catalogue.Web.Admin.Keywords;
 
 namespace Catalogue.Web.Controllers.Keywords
@@ -19,7 +19,7 @@ namespace Catalogue.Web.Controllers.Keywords
             _keywordService = service;
         }
 
-        public ICollection<MetadataKeyword> Get(String q)
+        public ICollection<Keyword> Get(String q)
         {
             return _keywordService.ReadByValue(q);
         }

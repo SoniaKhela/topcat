@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Catalogue.Gemini.Model;
 using Catalogue.Web.Controllers.Search;
 using Catalogue.Web.Search;
 using Catalogue.Web.Search.Service;

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Catalogue.Data.Analyzers;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.Model;
 using Lucene.Net.Analysis.Standard;
 using Raven.Abstractions.Indexing;
 using Raven.Client.Indexes;

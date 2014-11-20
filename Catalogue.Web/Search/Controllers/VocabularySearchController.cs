@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using Catalogue.Gemini.Model;
 using Catalogue.Web.Controllers.Search;
 using Catalogue.Web.Search.Service;
 

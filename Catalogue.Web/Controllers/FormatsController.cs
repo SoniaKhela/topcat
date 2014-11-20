@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using Catalogue.Gemini.DataFormats;
+using Catalogue.Data.DataFormats;
 using Catalogue.Utilities.Text;
 using FluentAssertions;
 using NUnit.Framework;

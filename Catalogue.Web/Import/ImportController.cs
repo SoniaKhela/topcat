@@ -3,6 +3,7 @@ using System.IO;
 using System.Web.Http;
 using Catalogue.Data.Import;
 using Catalogue.Data.Import.Mappings;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Seed;
 using Raven.Client;
 
@@ -12,6 +13,13 @@ namespace Catalogue.Web.Import
     public class ImportController : ApiController
     {
 
+        private readonly IStore store;
+
+        public ImportController(IStore store)
+        {
+            this.store = store;
+        }
+
         public class FileSpec
         {
             public string Path { get; set; }         
@@ -20,20 +28,17 @@ namespace Catalogue.Web.Import
         public Boolean Post(FileSpec file)
         {
 
-            using (var db = WebApiApplication.DocumentStore.OpenSession())
-            {
-                var importer = Importer.CreateImporter<ActivitiesMapping>(db);
-                //importer.SkipBadRecords = true; // todo remove this
-                importer.Import(file.Path);
-                db.SaveChanges();
-            }
+            var importer = Importer.CreateImporter<ActivitiesMapping>(store);
+            //importer.SkipBadRecords = true; // todo remove this
+            importer.Import(file.Path);
+
             return true;
         }
 
         /*using put as is convenient*/
         public Boolean Put()
         {
-            Seeder.Seed(WebApiApplication.DocumentStore);
+            Seeder.Seed(store);
             return true;
         }
         

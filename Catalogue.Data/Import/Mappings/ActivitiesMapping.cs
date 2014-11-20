@@ -5,10 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Test;
 using Catalogue.Data.Write;
-using Catalogue.Gemini.DataFormats;
-using Catalogue.Gemini.Model;
 using Catalogue.Utilities.Text;
 using CsvHelper.Configuration;
 using FluentAssertions;
@@ -136,35 +135,35 @@ namespace Catalogue.Data.Import.Mappings
             }
         }
 
-        public static List<MetadataKeyword> ParseKeywords(string input)
+        public static List<Keyword> ParseKeywords(string input)
         {
             var keywords = (from each in input.Split(',') // keywords are separated by commas
                             select ParseKeywordHelper(each)).ToList();
             
             // add the broad category for activities (not included in the source data)
-            keywords.Insert(0, new MetadataKeyword
+            keywords.Insert(0, new Keyword
                 {
-                   Vocab = "http://vocab.jncc.gov.uk/jncc-broad-category",
+                   VocabId = "http://vocab.jncc.gov.uk/jncc-broad-category",
                    Value = "Marine Human Activities"
                 });
 
             return keywords;
         }
 
-        static MetadataKeyword ParseKeywordHelper(string s)
+        static Keyword ParseKeywordHelper(string s)
         {
             var vocabAndValue = (from x in s.Trim().Split(new [] {"::"}, StringSplitOptions.None)
                                  select x.Trim()).ToList(); // vocab::value pairs are separated by two colons
 
             if (vocabAndValue.Count <= 1) // no vocab (just a value)
             {
-                return new MetadataKeyword { Value = vocabAndValue.Single() };
+                return new Keyword { Value = vocabAndValue.Single() };
             }
             else
             {
-                return new MetadataKeyword
+                return new Keyword
                     {
-                        Vocab = MapSourceVocabToRealVocab(vocabAndValue.ElementAt(0)),
+                        VocabId = MapSourceVocabToRealVocab(vocabAndValue.ElementAt(0)),
                         Value = vocabAndValue.ElementAt(1),
                     };
             }
@@ -210,16 +209,13 @@ namespace Catalogue.Data.Import.Mappings
         {
             var store = new InMemoryDatabaseHelper().Create();
 
-            using (var db = store.OpenSession())
+            using (var db = new Store(store.OpenSession(), new SqlContext()))
             {
                 var importer = Importer.CreateImporter<ActivitiesMapping>(db);
                 //importer.SkipBadRecords = true; // todo remove this
                 importer.Import(@"C:\Work\pressures-data\Human_Activities_Metadata_Catalogue.csv");
-                db.SaveChanges();
 
-                imported = db.Query<Record>()
-                             .Customize(x => x.WaitForNonStaleResults())
-                             .Take(1000).ToList();
+                imported = db.SqlDb.Records.Take(1000).ToList();
             }
         }
 
@@ -280,7 +276,7 @@ namespace Catalogue.Data.Import.Mappings
         {
             // activities data is categorised as 'Marine Human Activities'
             imported.Count(r => r.Gemini.Keywords
-                .Any(k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Marine Human Activities"))
+                .Any(k => k.VocabId == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Marine Human Activities"))
                 .Should().Be(97);
         }
 
@@ -288,7 +284,7 @@ namespace Catalogue.Data.Import.Mappings
         public void should_import_keywords_that_have_no_vocab_namespace()
         {
             imported.SelectMany(r => r.Gemini.Keywords)
-                .Should().Contain(k => k.Vocab.IsBlank() && k.Value == "Extraction");
+                .Should().Contain(k => k.VocabId.IsBlank() && k.Value == "Extraction");
         }
 
         [Test]
@@ -296,7 +292,7 @@ namespace Catalogue.Data.Import.Mappings
         {
             // a test to check that we're converting the short vocab list names to a suitable http namespace 
             imported.SelectMany(r => r.Gemini.Keywords)
-                .All(k => k.Vocab.IsBlank() || k.Vocab.StartsWith("http://"))
+                .All(k => k.VocabId.IsBlank() || k.VocabId.StartsWith("http://"))
                 .Should().BeTrue();
         }
 
@@ -304,7 +300,7 @@ namespace Catalogue.Data.Import.Mappings
         public void should_import_keywords_with_wikipedia_glossary_of_nautical_terms_namespace()
         {
             imported.SelectMany(r => r.Gemini.Keywords)
-                .Should().Contain(k => k.Vocab == "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms");
+                .Should().Contain(k => k.VocabId == "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms");
         }
 
 
@@ -366,7 +362,7 @@ namespace Catalogue.Data.Import.Mappings
         public void should_import_only_known_data_formats()
         {
             imported.Select(r => r.Gemini.DataFormat)
-                .Should().OnlyContain(x => DataFormats.Known.SelectMany(g => g.Formats).Any(f => f.Name == x));
+                .Should().OnlyContain(x => DataFormats.DataFormats.Known.SelectMany(g => g.Formats).Any(f => f.Name == x));
         }
 
         [Test]

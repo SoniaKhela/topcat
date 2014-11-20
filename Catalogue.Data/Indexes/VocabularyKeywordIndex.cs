@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catalogue.Data.Analyzers;
-using Catalogue.Gemini.Model;
+using Catalogue.Data.Model;
 using Raven.Abstractions.Indexing;
 using Raven.Client.Indexes;
 

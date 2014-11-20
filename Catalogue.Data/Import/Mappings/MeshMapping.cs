@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.Model;
 using Catalogue.Utilities.Text;
 using CsvHelper.Configuration;
 using FluentAssertions;
@@ -26,17 +25,17 @@ namespace Catalogue.Data.Import.Mappings
             config.RegisterClassMap<GeminiMap>();
         }
 
-        public static List<MetadataKeyword> ParseMeshKeywords(string input)
+        public static List<Keyword> ParseMeshKeywords(string input)
         {
-            IEnumerable<MetadataKeyword> q = from m in Regex.Matches(input, @"\{(.*?)\}").Cast<Match>()
+            IEnumerable<Keyword> q = from m in Regex.Matches(input, @"\{(.*?)\}").Cast<Match>()
                 let pair = m.Groups.Cast<Group>().Select(g => g.Value).Skip(1).First().Split(',')
                 let vocab = pair.ElementAt(0).Trim().Trim('"').Trim()
                 let keyword = pair.ElementAt(1).Trim().Trim('"').Trim()
                 where keyword.IsNotBlank()
-                select new MetadataKeyword
+                select new Keyword
                 {
                     // todo: map the source vocab IDs to "real" ones
-                    Vocab = MapSourceVocabToRealVocab(vocab),
+                    VocabId = MapSourceVocabToRealVocab(vocab),
                     Value = MapSourceKeywordToRealKeyword(keyword),
                 };
 
@@ -175,10 +174,10 @@ namespace Catalogue.Data.Import.Mappings
             string input =
                 "{\"jncc-broad-category\", \"SeabedHabitatMaps\"}, {\"OriginalSeabedClassificationSystem\", \"Local\"}, {\"SeabedMapStatus\", \"Show on webGIS\"}, {\"SeabedMapStatus\", \"Translated to EUNIS\"}, {\"SeabedMapStatus\", \"Data Provider Agreement signed FULL ACCESS\"}";
 
-            List<MetadataKeyword> keywords = MeshMapping.ParseMeshKeywords(input);
+            List<Keyword> keywords = MeshMapping.ParseMeshKeywords(input);
 
             keywords.Should().HaveCount(5);
-            keywords.Select(k => k.Vocab).Should().ContainInOrder(new[]
+            keywords.Select(k => k.VocabId).Should().ContainInOrder(new[]
             {
                 "http://vocab.jncc.gov.uk/jncc-broad-category",
                 "http://vocab.jncc.gov.uk/original-seabed-classification-system",

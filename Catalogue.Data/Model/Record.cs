@@ -1,14 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Spatial;
-using Catalogue.Gemini.Model;
 using Raven.Imports.Newtonsoft.Json;
 
 namespace Catalogue.Data.Model
 {
     public class Record
     {
-        [Key]
         public Guid Id { get; set; }
 
         /// <summary>

@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Catalogue.Data.Indexes;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.Model;
 using Raven.Client;
 
 namespace Catalogue.Web.Admin.Keywords
 {
     public interface IKeywordsRepository
     {
-        MetadataKeyword Create(String value, String vocab);
-        void Delete(MetadataKeyword keyword);
-        ICollection<MetadataKeyword> Read(String value, String vocab);
-        ICollection<MetadataKeyword> ReadByVocab(string vocab);
-        ICollection<MetadataKeyword> ReadByValue(string value);
-        ICollection<MetadataKeyword> ReadAll();
+        Keyword Create(String value, String vocab);
+        void Delete(Keyword keyword);
+        ICollection<Keyword> Read(String value, String vocab);
+        ICollection<Keyword> ReadByVocab(string vocab);
+        ICollection<Keyword> ReadByValue(string value);
+        ICollection<Keyword> ReadAll();
     }
 
     public class KeywordsRepository : IKeywordsRepository
@@ -28,36 +27,36 @@ namespace Catalogue.Web.Admin.Keywords
             _db = db;
         }
 
-        public MetadataKeyword Create(string value, string vocab)
+        public Keyword Create(string value, string vocab)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(MetadataKeyword keyword)
+        public void Delete(Keyword keyword)
         {
             throw new NotImplementedException();
         }
 
-        public ICollection<MetadataKeyword> Read(string value = null, string vocab = null)
+        public ICollection<Keyword> Read(string value = null, string vocab = null)
         {
             throw new NotImplementedException();
         }
 
-        public ICollection<MetadataKeyword> ReadByVocab(string vocab)
+        public ICollection<Keyword> ReadByVocab(string vocab)
         {
             throw new NotImplementedException();
         }
 
-        public ICollection<MetadataKeyword> ReadByValue(string value)
+        public ICollection<Keyword> ReadByValue(string value)
         {
             int startA = 0;
-            var keywords = new List<MetadataKeyword>();
+            var keywords = new List<Keyword>();
 
             //Get matching keywords from Vocab table
             //Do this to get around the limit on max number of results returned by raven
             while (VocabBaseQuery(startA).Any(k => k.Value.StartsWith(value)))
             {
-                List<MetadataKeyword> current = VocabBaseQuery(startA).Where(k => k.Value.StartsWith(value)).Select(r => new MetadataKeyword {Value = r.Value, Vocab = r.Vocab})
+                List<Keyword> current = VocabBaseQuery(startA).Where(k => k.Value.StartsWith(value)).Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
                     .ToList(); 
                 startA += current.Count;
                 keywords.AddRange(current);
@@ -70,7 +69,7 @@ namespace Catalogue.Web.Admin.Keywords
                 var current =
                     MiscBaseQuery(startB)
                         .Where(k => k.Value.StartsWith(value))
-                        .Select(r => new MetadataKeyword {Value = r.Value, Vocab = r.Vocab})
+                        .Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
                         .ToList();
 
                 startB += current.Count;
@@ -80,13 +79,13 @@ namespace Catalogue.Web.Admin.Keywords
             return keywords;
         }
 
-        public ICollection<MetadataKeyword> ReadAll()
+        public ICollection<Keyword> ReadAll()
         {
             int start = 0;
-            var keywords = new List<MetadataKeyword>();
+            var keywords = new List<Keyword>();
             while (VocabBaseQuery(start).Any())
             {
-                List<MetadataKeyword> current = VocabBaseQuery(start).Select(r => new MetadataKeyword {Value = r.Value, Vocab = r.Vocab})
+                List<Keyword> current = VocabBaseQuery(start).Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
                         .ToList();
                 start += current.Count;
                 keywords.AddRange(current);

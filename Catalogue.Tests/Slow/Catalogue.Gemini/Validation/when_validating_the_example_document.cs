@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using Catalogue.Gemini.Encoding;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.Templates;
-using Catalogue.Gemini.Validation;
+using Catalogue.Data.Encoding;
+using Catalogue.Data.Model;
+using Catalogue.Data.Templates;
+using Catalogue.Data.Validation;
 using FluentAssertions;
 using NUnit.Framework;
 

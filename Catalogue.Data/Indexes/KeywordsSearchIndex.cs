@@ -30,8 +30,8 @@ namespace Catalogue.Data.Indexes
                              from k in record.Gemini.Keywords
                              select new
                              {
-                                 Key = k.Vocab + "::" + k.Value, // make a unique key field
-                                 Vocab = k.Vocab,
+                                 Key = k.VocabId + "::" + k.Value, // make a unique key field
+                                 Vocab = k.VocabId,
                                  Value = k.Value,
                                  ValueN = k.Value,
                              };

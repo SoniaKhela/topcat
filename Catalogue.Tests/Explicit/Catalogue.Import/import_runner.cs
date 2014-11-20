@@ -2,7 +2,6 @@
 using Catalogue.Data.Import.Mappings;
 using Catalogue.Data.Repository;
 using Catalogue.Data.Write;
-using Catalogue.Gemini.Write;
 using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Document;
@@ -15,14 +14,15 @@ namespace Catalogue.Tests.Explicit.Catalogue.Import
         [Test]
         public void run()
         {
-            var store = new DocumentStore();
-            store.ParseConnectionString("Url=http://localhost:8888/");
-            store.Initialize();
+            var documentStore = new DocumentStore();
+            documentStore.ParseConnectionString("Url=http://localhost:8888/");
+            documentStore.Initialize();
 
-            using (IDocumentSession db = store.OpenSession())
+            using (var store = new Store(documentStore.OpenSession(), new SqlContext()))
             {
+                var vocabService = new VocabularyService(new VocabularyValidator(store), store);
                 var importer = new Importer<ActivitiesMapping>(new FileSystem(),
-                    new RecordService(db, new RecordValidator(new VocabularyService(db, new VocabularyValidator(db))),new VocabularyService(db, new VocabularyValidator(db)),new SqlContext()));
+                    new RecordService(new RecordValidator(vocabService),vocabService,store));
                 importer.Import(@"C:\Work\pressures-data\Human_Activities_Metadata_Catalogue.csv");
             }
         }

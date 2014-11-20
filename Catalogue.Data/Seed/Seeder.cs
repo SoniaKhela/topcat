@@ -7,11 +7,8 @@ using Catalogue.Data.Import;
 using Catalogue.Data.Import.Mappings;
 using Catalogue.Data.Model;
 using Catalogue.Data.Repository;
+using Catalogue.Data.Templates;
 using Catalogue.Data.Write;
-using Catalogue.Gemini.DataFormats;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.Templates;
-using Catalogue.Gemini.Write;
 using Catalogue.Utilities.Clone;
 using Raven.Client;
 
@@ -19,51 +16,41 @@ namespace Catalogue.Data.Seed
 {
     public class Seeder
     {
-        private readonly IDocumentSession ravenDb;
         private readonly IRecordService recordService;
-        private readonly SqlContext sqlDb;
+        private readonly IVocabularyService vocabularyService;
+        private readonly IStore store;
 
-        public Seeder(IDocumentSession ravenDb, IRecordService recordService, SqlContext sqlDb)
+        public Seeder(IStore store, IRecordService recordService, IVocabularyService vocabularyService)
         {
-            this.ravenDb = ravenDb;
             this.recordService = recordService;
-            this.sqlDb = sqlDb;
+            this.store = store;
+            this.vocabularyService = vocabularyService;
         }
 
-        //public static void importMesh(IDocumentStore store)
-        //{
-        //    using (var sqlDb = new SqlContext())
-        //    using (var db = store.OpenSession())
-        //    {
-        //        var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-        //        var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService),vocabService, sqlDb));
-        //        s.AddVocabularies();
-        //        s.AddMeshRecords();
-
-        //        db.SaveChanges();
-        //        sqlDb.SaveChanges();
-        //    }
-        //}
-
-        public static void Seed(IDocumentStore store)
+        public static void Seed(IDocumentStore documentStore)
         {
-            using (var db = store.OpenSession())
+            using (var store = new Store(documentStore.OpenSession(), new SqlContext()))
             {
-                var vocabService = new VocabularyService(db, new VocabularyValidator(db));
-                var sqlDb = new SqlContext();
-                var s = new Seeder(db, new RecordService(db, new RecordValidator(vocabService), vocabService, sqlDb), sqlDb);
-                s.AddVocabularies();
-                s.AddMeshRecords();
-                s.AddSimpleExampleRecord();
-                s.AddReadOnlyRecord();
-                s.AddSecureRecords();
-                s.AddNonTopCopyRecord();
-                s.AddVariousDataFormatRecords();
-                s.AddBboxes();
-
-                db.SaveChanges();
-                sqlDb.SaveChanges();
+                Seed(store);
             }
+        }
+
+        public static void Seed(IStore store)
+        {
+
+            var vocabService = new VocabularyService(new VocabularyValidator(store), store);
+            var s = new Seeder(store, new RecordService(new RecordValidator(vocabService), vocabService,store), vocabService);
+            s.AddVocabularies();
+            s.AddMeshRecords();
+            s.AddSimpleExampleRecord();
+            s.AddReadOnlyRecord();
+            s.AddSecureRecords();
+            s.AddNonTopCopyRecord();
+            s.AddVariousDataFormatRecords();
+            s.AddBboxes();
+                
+            store.SaveChangesToAllStores();
+      
         }
 
         void AddMeshRecords()
@@ -74,8 +61,8 @@ namespace Catalogue.Data.Seed
 
             using (var reader = new StreamReader(s))
             {
-                var vocabService = new VocabularyService(ravenDb, new VocabularyValidator(ravenDb));
-                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(ravenDb, new RecordValidator(vocabService), vocabService, sqlDb));
+                var vocabService = new VocabularyService(new VocabularyValidator(store), store);
+                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(new RecordValidator(vocabService), vocabService, store));
                 importer.SkipBadRecords = true; // todo remove when data export is finished
                 importer.Import(reader);
             }
@@ -87,8 +74,8 @@ namespace Catalogue.Data.Seed
             {
                 Gemini = Library.Blank().With(m =>
                 {
-                    m.Keywords.Add(new MetadataKeyword { Vocab = "http://vocab.jncc.gov.uk/jncc-broad-category", Value = "Example Records" });
-                    m.Keywords.Add(new MetadataKeyword { Vocab = "http://vocab.jncc.gov.uk/example", Value = "example" });
+                    m.Keywords.Add(new Keyword { VocabId = "http://vocab.jncc.gov.uk/jncc-broad-category", Value = "Example Records" });
+                    m.Keywords.Add(new Keyword { VocabId = "http://vocab.jncc.gov.uk/example", Value = "example" });
                 }),
             };
         }
@@ -164,7 +151,7 @@ namespace Catalogue.Data.Seed
         {
             // add one record per data format group
 
-            foreach (var g in DataFormats.Known)
+            foreach (var g in DataFormats.DataFormats.Known)
             {
                 string n = g.Name.ToLower();
 
@@ -198,13 +185,14 @@ namespace Catalogue.Data.Seed
                     Name = "JNCC Broad Categories",
                     Description = "The broad dataset categories used within JNCC.",
                     PublicationDate = "2013",
-                    Keywords = new List<VocabularyKeyword>
+                    Keywords = new List<Keyword>
                         {
-                            new VocabularyKeyword {Id = Guid.NewGuid(), Value = "Seabed Habitat Maps"},
-                            new VocabularyKeyword {Id = Guid.NewGuid(), Value = "Marine Human Activities"}
+                            new Keyword {Value = "Seabed Habitat Maps"},
+                            new Keyword {Value = "Marine Human Activities"}
                         }
                 };
-            this.ravenDb.Store(jnccCategories);
+
+            vocabularyService.Update(jnccCategories);
         }
 
         // BigBoundingBoxWithNothingInside and SmallBox do not intersect

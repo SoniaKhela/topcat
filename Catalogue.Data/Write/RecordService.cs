@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Catalogue.Data.Helpers;
 using Catalogue.Data.Model;
 using Catalogue.Data.Repository;
-using Catalogue.Gemini.Helpers;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.Spatial;
-using Catalogue.Gemini.Templates;
-using Catalogue.Gemini.Write;
+using Catalogue.Data.Spatial;
+using Catalogue.Data.Templates;
 using Catalogue.Utilities.Clone;
 using Catalogue.Utilities.Collections;
 using Catalogue.Utilities.Text;
@@ -16,6 +14,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using Raven.Client;
+using RefactorThis.GraphDiff;
 
 namespace Catalogue.Data.Write
 {
@@ -28,23 +27,21 @@ namespace Catalogue.Data.Write
 
     public class RecordService : IRecordService
     {
-        private readonly IDocumentSession db;
         private readonly IRecordValidator validator;
         private readonly IVocabularyService vocabService;
-        private readonly SqlContext sqlDb;
+        private readonly IStore store;
 
-        public RecordService(IDocumentSession db, IRecordValidator validator, IVocabularyService vocabService, SqlContext sqlDb)
+        public RecordService(IRecordValidator validator, IVocabularyService vocabService, IStore store)
         {
-            this.db = db;
+            this.store = store;
             this.validator = validator;
             this.vocabService = vocabService;
-            this.sqlDb = sqlDb;
         }
 
         public Record Load(Guid id)
         {
             //return db.Load<Record>(id);
-            return sqlDb.Records.FirstOrDefault(x => x.Id == id);
+            return store.SqlDb.Records.FirstOrDefault(x => x.Id == id);
         }
 
         public RecordServiceResult Insert(Record record)
@@ -81,15 +78,24 @@ namespace Catalogue.Data.Write
 
             SyncDenormalizations(record);
 
-            var vocabSyncResults = vocabService.AddKeywords(record.Gemini.Keywords);
+            var vocabSyncResults = vocabService.UpsertKeywords(record.Gemini.Keywords);
 
             if (vocabSyncResults.All(x => x.Success))
             {
-                db.Store(record);
+               
+                store.SqlDb.UpdateGraph(record, recordMap => recordMap
+                    .OwnedEntity(r => r.Gemini, geminiMap => geminiMap
+                        .OwnedEntity(m => m.TemporalExtent)
+                        .OwnedEntity(m => m.ResponsibleOrganisation)
+                        .OwnedEntity(m => m.MetadataPointOfContact)
+                        .OwnedEntity(m => m.BoundingBox)
+                        .OwnedCollection(m => m.Extent)
+                        .AssociatedCollection(m => m.Keywords)));
 
-                //don't add existing (tracked) entities.
-                sqlDb.Records.Add(record);
-                
+                store.RavenDb.Store(record);
+
+                store.SaveChangesToAllStores();
+
                 return new RecordServiceResult
                 {
                     Record = record,
@@ -125,9 +131,9 @@ namespace Catalogue.Data.Write
         void CorrectlyOrderKeywords(Record record)
         {
             record.Gemini.Keywords = record.Gemini.Keywords
-                .OrderByDescending(k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category")
-                .ThenByDescending(k => k.Vocab.IsNotBlank())
-                .ThenBy(k => k.Vocab)
+                .OrderByDescending(k => k.VocabId == "http://vocab.jncc.gov.uk/jncc-broad-category")
+                .ThenByDescending(k => k.VocabId.IsNotBlank())
+                .ThenBy(k => k.VocabId)
                 .ThenBy(k => k.Value)
                 .ToList();
         }
@@ -172,7 +178,7 @@ namespace Catalogue.Data.Write
         [Test]
         public void should_fail_when_record_is_readonly()
         {
-            var service = new RecordService(Mock.Of<IDocumentSession>(), Mock.Of<IRecordValidator>(),Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var service = new RecordService(Mock.Of<IRecordValidator>(),Mock.Of<IVocabularyService>(), Mock.Of<IStore>());
             var record = new Record { ReadOnly = true };
 
             service.Invoking(s => s.Update(record))
@@ -186,20 +192,28 @@ namespace Catalogue.Data.Write
         [Test]
         public void should_store_valid_record_in_the_database()
         {
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore>();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<IStore>());
 
             var record = BasicRecord();
             service.Upsert(record);
 
-            Mock.Get(database).Verify(db => db.Store(record));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(record));
+            Mock.Get(store).Verify(db => db.SqlDb.UpdateGraph(record, recordMap => recordMap
+                    .OwnedEntity(r => r.Gemini, geminiMap => geminiMap
+                        .OwnedEntity(m => m.TemporalExtent)
+                        .OwnedEntity(m => m.ResponsibleOrganisation)
+                        .OwnedEntity(m => m.MetadataPointOfContact)
+                        .OwnedEntity(m => m.BoundingBox)
+                        .OwnedCollection(m => m.Extent)
+                        .AssociatedCollection(m => m.Keywords))));
         }
 
         [Test]
         public void should_not_store_invalid_record_in_the_database()
         {
             var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, FailingValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var service = new RecordService(FailingValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<IStore>());
 
             service.Upsert(BasicRecord());
 
@@ -212,8 +226,7 @@ namespace Catalogue.Data.Write
             // so we can pass the possibly modified record back to the client
             // without an unnecessary fetch from the database
 
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<IStore>());
 
             var record = BasicRecord();
             var result = service.Upsert(record);
@@ -224,8 +237,8 @@ namespace Catalogue.Data.Write
         [Test]
         public void should_store_bounding_box_as_wkt()
         {
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore>();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), store);
             
             var e = Library.Example();
             var record = new Record { Gemini = e };
@@ -233,7 +246,7 @@ namespace Catalogue.Data.Write
             service.Upsert(record);
 
             string expectedWkt = BoundingBoxUtility.ToWkt(e.BoundingBox);
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Wkt == expectedWkt)));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Wkt == expectedWkt)));
         }
 
         [Test]
@@ -241,47 +254,47 @@ namespace Catalogue.Data.Write
         {
             // to avoid raven / lucene indexing errors
 
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore>();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), store);
 
             service.Upsert(BasicRecord());
 
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Wkt == null)));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Wkt == null)));
         }
 
         [Test]
         public void should_always_set_resource_type_to_dataset()
         {
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore >();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), store);
 
             var record = BasicRecord().With(r => r.Gemini.ResourceType = "");
             service.Upsert(record);
 
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Gemini.ResourceType == "dataset")));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Gemini.ResourceType == "dataset")));
         }
 
         [Test]
         public void should_standardise_unconditional_use_constraints()
         {
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore >();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), store);
 
             var record = BasicRecord().With(r => r.Gemini.UseConstraints = "   No conditions APPLY");
             service.Upsert(record);
 
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Gemini.UseConstraints == "no conditions apply")));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Gemini.UseConstraints == "no conditions apply")));
         }
 
         [Test]
         public void should_set_security_to_open_by_default()
         {
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore>();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(), store);
 
             service.Upsert(BasicRecord());
 
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Security == Security.Open)));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Security == Security.Open)));
         }
 
         [Test]
@@ -290,8 +303,8 @@ namespace Catalogue.Data.Write
             // should be sorted by vocab, then value, but with distinguished vocab "jncc broad category" first!
             // finally, keywords with no namespace should be last
 
-            var database = Mock.Of<IDocumentSession>();
-            var service = new RecordService(database, ValidatorStub(), Mock.Of<IVocabularyService>(), Mock.Of<SqlContext>());
+            var store = Mock.Of<IStore>();
+            var service = new RecordService(ValidatorStub(), Mock.Of<IVocabularyService>(),store);
 
             var record = BasicRecord().With(r =>
                 {
@@ -318,7 +331,7 @@ namespace Catalogue.Data.Write
                     { "", "some-keyword" },
                 }.ToKeywordList();
 
-            Mock.Get(database).Verify(db => db.Store(It.Is((Record r) => r.Gemini.Keywords.IsEqualTo(expected))));
+            Mock.Get(store).Verify(db => db.RavenDb.Store(It.Is((Record r) => r.Gemini.Keywords.IsEqualTo(expected))));
         }
 
         Record BasicRecord()

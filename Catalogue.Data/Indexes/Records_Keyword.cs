@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catalogue.Data.Model;
-using Catalogue.Gemini.Model;
 using Raven.Abstractions.Indexing;
 using Raven.Client.Indexes;
 
@@ -25,7 +24,7 @@ namespace Catalogue.Data.Indexes
                              select
                                  new
                                      {
-                                         Vocab = docGeminiKeywordsItem.Vocab,
+                                         Vocab = docGeminiKeywordsItem.VocabId,
                                          Value = docGeminiKeywordsItem.Value
                                      };
         }

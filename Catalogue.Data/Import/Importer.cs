@@ -6,8 +6,6 @@ using Catalogue.Data.Import.Mappings;
 using Catalogue.Data.Model;
 using Catalogue.Data.Repository;
 using Catalogue.Data.Write;
-using Catalogue.Gemini.Model;
-using Catalogue.Gemini.Write;
 using Catalogue.Utilities.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -73,10 +71,10 @@ namespace Catalogue.Data.Import
     /// </summary>
     public static class Importer
     {
-        public static Importer<T> CreateImporter<T>(IDocumentSession db) where T : IMapping, new()
+        public static Importer<T> CreateImporter<T>(IStore store) where T : IMapping, new()
         {
-            var vocabService = new VocabularyService(db, new VocabularyValidator(db)); 
-            return new Importer<T>(new FileSystem(), new RecordService(db, new RecordValidator(vocabService),vocabService, new SqlContext()));
+            var vocabService = new VocabularyService(new VocabularyValidator(store), store); 
+            return new Importer<T>(new FileSystem(), new RecordService(new RecordValidator(vocabService),vocabService, store));
         }
     }
 
