@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Raven.Imports.Newtonsoft.Json;
 
 namespace Catalogue.Data.Model
@@ -48,6 +49,9 @@ namespace Catalogue.Data.Model
 
         [JsonIgnore]
         public virtual Vocabulary Vocab { get; set; }
+
+        [JsonIgnore]
+        public virtual List<Metadata> Metadata { get; set; }
 
         public string Value { get; set; }
         public string VocabId { get; set; }

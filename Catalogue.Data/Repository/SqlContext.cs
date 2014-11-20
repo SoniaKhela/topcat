@@ -42,8 +42,6 @@ namespace Catalogue.Data.Repository
                         .WithMany(v => v.Keywords)
                         .HasForeignKey(k => k.VocabId);
 
-
-
         } 
 
     }
