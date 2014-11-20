@@ -131,11 +131,15 @@
     <Compile Include="Indexes\Records_SpatialIndex.cs" />
     <Compile Include="Indexes\Records_Search.cs" />
     <Compile Include="Indexes\VocabularySearchIndex.cs" />
+    <Compile Include="Model\BoundingBox.cs" />
+    <Compile Include="Model\Extent.cs" />
     <Compile Include="Model\Keyword.cs" />
     <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\Record.cs" />
+    <Compile Include="Model\ResponsibleParty.cs" />
     <Compile Include="Model\Security.cs" />
     <Compile Include="Model\Status.cs" />
+    <Compile Include="Model\TemporalExtent.cs" />
     <Compile Include="Model\Validation.cs" />
     <Compile Include="Model\Vocabulary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

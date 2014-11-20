@@ -56,43 +56,4 @@ namespace Catalogue.Data.Model
         fra =3,
         fin = 4
     }
-
-    public class Extent
-    {
-        [JsonIgnore]
-        public int  ExtentId { get; set; }
-        public string Value { get; set; }
-        public string Authority { get; set; }
-    }
-
-    public class TemporalExtent
-    {
-        [JsonIgnore]
-        public int TemporalExtentId { get; set; }
-        public DateTime Begin { get; set; }
-        public DateTime End { get; set; }
-    }
-
-    public class ResponsibleParty
-    {
-        [JsonIgnore]
-        public int ResponsiblePartyId { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Role { get; set; }
-    }
-
-    /// <summary>
-    ///  Bounding box referenced to WGS 84.
-    /// </summary>
-    public class BoundingBox
-    {
-        [JsonIgnore]
-        public int BoundingBoxId { get; set; }
-        public decimal North { get; set; }
-        public decimal South { get; set; }
-        public decimal East { get; set; }
-        public decimal West { get; set; }
-    }
-
 }

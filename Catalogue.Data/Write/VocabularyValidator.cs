@@ -89,6 +89,8 @@ namespace Catalogue.Data.Write
 
         private IEnumerable<VocabularyValidationResultMessage> ValidateKeywordAdditions(Vocabulary source, Vocabulary target)
         {
+            if (target == null) return new List<VocabularyValidationResultMessage>();
+
             //Any new keywords that duplicate existing ones
             var duplicates =
                 (from dk in
