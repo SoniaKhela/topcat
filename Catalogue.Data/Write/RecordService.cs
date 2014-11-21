@@ -82,6 +82,8 @@ namespace Catalogue.Data.Write
 
             if (vocabSyncResults.All(x => x.Success))
             {
+
+                IdentifyKeywords(record);
                
                 store.SqlDb.UpdateGraph(record, recordMap => recordMap
                     .OwnedEntity(r => r.Gemini, geminiMap => geminiMap
@@ -109,6 +111,15 @@ namespace Catalogue.Data.Write
                     Record = record,
                     Validation = validation,
                 };
+        }
+
+        private void IdentifyKeywords(Record record)
+        {
+            foreach (var keyword in record.Gemini.Keywords.Where(k => !String.IsNullOrWhiteSpace(k.VocabId)))
+            {
+                keyword.Id =
+                    store.SqlDb.Keywords.Single(k => k.Value == keyword.Value && k.VocabId == keyword.VocabId).Id;
+            }
         }
 
 

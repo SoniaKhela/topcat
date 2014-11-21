@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Raven.Imports.Newtonsoft.Json;
 
 namespace Catalogue.Data.Model
@@ -54,6 +55,8 @@ namespace Catalogue.Data.Model
         public virtual List<Metadata> Metadata { get; set; }
 
         public string Value { get; set; }
+
+        [MaxLength(450)]
         public string VocabId { get; set; }
     }
 }

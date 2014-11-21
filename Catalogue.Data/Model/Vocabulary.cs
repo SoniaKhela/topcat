@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Catalogue.Data.Model
 {
 
     public class Vocabulary
     {
+        [MaxLength(450)]
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

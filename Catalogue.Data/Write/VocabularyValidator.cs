@@ -67,7 +67,7 @@ namespace Catalogue.Data.Write
         {
             var result = new List<VocabularyValidationResultMessage>();
 
-            if (targetVocab == null || allowControlledUpdates) return result;
+            if (targetVocab == null || !targetVocab.Controlled || allowControlledUpdates) return result;
 
             IEnumerable<Keyword> newKeywords;
             newKeywords = sourceVocab.Keywords.Where(x => x.Id == 0);
@@ -80,7 +80,7 @@ namespace Catalogue.Data.Write
                         Message =
                             String.Format(
                                 "The keyword {0} cannot be added to the vocabulary {1} because it is controlled",
-                                targetVocab.Id, newKeyword.Value)
+                                newKeyword.Value, targetVocab.Id)
                     });
             }
 
