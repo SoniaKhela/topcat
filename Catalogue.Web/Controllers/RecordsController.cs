@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Templates;
 using Catalogue.Data.Write;
 using Catalogue.Utilities.Clone;
@@ -15,13 +16,13 @@ namespace Catalogue.Web.Controllers.Records
 {
     public class RecordsController : ApiController
     {
-        readonly IDocumentSession db;
+        readonly IStore store;
         readonly IRecordService service;
 
-        public RecordsController(IRecordService service, IDocumentSession db)
+        public RecordsController(IRecordService service, IStore store)
         {
             this.service = service;
-            this.db = db;
+            this.store = store;
         }
 
         // GET api/records/57d34691-9064-4c1e-90a7-7b0c112daa8d (get a record)
@@ -52,7 +53,7 @@ namespace Catalogue.Web.Controllers.Records
             if (result.Record.Id != id) throw new Exception("The id of the record does not match that supplied to the put method");
 
             if (result.Success)
-                db.SaveChanges();
+                store.SaveChangesToAllStores();
 
             return result;
         }
@@ -64,7 +65,7 @@ namespace Catalogue.Web.Controllers.Records
             var result = service.Insert(record);
 
             if (result.Success)
-                db.SaveChanges();
+                store.SaveChangesToAllStores();
 
             return result;
         }
@@ -76,7 +77,7 @@ namespace Catalogue.Web.Controllers.Records
         [Test]
         public void should_return_blank_record_for_empty_guid()
         {
-            var controller = new RecordsController(Mock.Of<IRecordService>(), Mock.Of<IDocumentSession>());
+            var controller = new RecordsController(Mock.Of<IRecordService>(), Mock.Of<IStore>());
             var record = controller.Get(Guid.Empty);
 
             record.Gemini.Title.Should().BeBlank();
@@ -93,7 +94,7 @@ namespace Catalogue.Web.Controllers.Records
                 };
             var rsr = RecordServiceResult.SuccessfulResult.With(r => r.Record = record);
             var service = Mock.Of<IRecordService>(s => s.Insert(It.IsAny<Record>()) == rsr);
-            var controller = new RecordsController(service, Mock.Of<IDocumentSession>());
+            var controller = new RecordsController(service, Mock.Of<IStore>());
             
             var result = controller.Post(record);
 

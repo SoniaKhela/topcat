@@ -44,7 +44,6 @@ namespace Catalogue.Data.Model
             }
         }
 
-
         [JsonIgnore]
         public int Id { get; set; }
 
@@ -54,6 +53,7 @@ namespace Catalogue.Data.Model
         [JsonIgnore]
         public virtual List<Metadata> Metadata { get; set; }
 
+        [MaxLength(450)]
         public string Value { get; set; }
 
         [MaxLength(450)]

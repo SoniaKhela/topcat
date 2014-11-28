@@ -82,6 +82,8 @@ namespace Catalogue.Data.Write
 
             if (vocabSyncResults.All(x => x.Success))
             {
+                //save all the vocab changes to the db
+                store.SqlDb.SaveChanges();
 
                 IdentifyKeywords(record);
                
@@ -95,8 +97,6 @@ namespace Catalogue.Data.Write
                         .AssociatedCollection(m => m.Keywords)));
 
                 store.RavenDb.Store(record);
-
-                store.SaveChangesToAllStores();
 
                 return new RecordServiceResult
                 {

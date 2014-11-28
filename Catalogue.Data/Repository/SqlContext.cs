@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,10 +30,14 @@ namespace Catalogue.Data.Repository
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            //Ensure the metadata table is not pluralised
             modelBuilder.Entity<Metadata>()
                         .ToTable("Metadata");
+
+            //Ensure datetime properties are stored as datetime2 in sql
             modelBuilder.Properties<DateTime>().Configure(c => c.HasColumnType("datetime2"));
 
+            //Define a one to many relationship between vocabularies in which the keyword also has the id as a property
             modelBuilder.Entity<Vocabulary>()
                         .HasMany(v => v.Keywords)
                         .WithOptional(k => k.Vocab)
@@ -42,8 +48,28 @@ namespace Catalogue.Data.Repository
                         .WithMany(v => v.Keywords)
                         .HasForeignKey(k => k.VocabId);
 
-        } 
+            //Unique constraint on keyword
+            //  Keyword does not need to be in vocab
+            modelBuilder
+                .Entity<Keyword>()
+                .Property(k => k.VocabId)
+                .IsOptional()
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(
+                        new IndexAttribute("IX_UniqueKeyword", 1) {IsUnique = true}));
 
+
+            //  But keyword must have a value
+            modelBuilder
+                .Entity<Keyword>()
+                .Property(k => k.Value)
+                .IsRequired()
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(
+                        new IndexAttribute("IX_UniqueKeyword", 2) {IsUnique = true}));
+
+        }
     }
-
 }

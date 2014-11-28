@@ -22,7 +22,7 @@ namespace Catalogue.Tests.Explicit.Catalogue.Import
             {
                 var vocabService = new VocabularyService(new VocabularyValidator(store), store);
                 var importer = new Importer<ActivitiesMapping>(new FileSystem(),
-                    new RecordService(new RecordValidator(vocabService),vocabService,store));
+                    new RecordService(new RecordValidator(vocabService),vocabService,store), store);
                 importer.Import(@"C:\Work\pressures-data\Human_Activities_Metadata_Catalogue.csv");
             }
         }

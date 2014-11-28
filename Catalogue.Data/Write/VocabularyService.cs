@@ -44,8 +44,6 @@ namespace Catalogue.Data.Write
             store.SqlDb.UpdateGraph(vocab, map =>
                                            map.OwnedCollection(v => v.Keywords));
 
-            store.SqlDb.SaveChanges();
-
             return new VocabularyServiceResult
             {
                 Success = true,
@@ -63,7 +61,7 @@ namespace Catalogue.Data.Write
         }
 
 
-        private VocabularyServiceResult LimitedVocabularyUpsert(Vocabulary vocab)
+        private VocabularyServiceResult AppendKeywords(Vocabulary vocab)
         {
             var validationResult = validator.Valdiate(vocab, allowControlledUpdates:false);
 
@@ -80,12 +78,13 @@ namespace Catalogue.Data.Write
             if (v == null)
             {
                 //Create new vocab
-                return UpsertVocabulary(vocab, validationResult);
+                var result =  UpsertVocabulary(vocab, validationResult);
+                if (result.Success) store.SqlDb.SaveChanges();
+                return result;
             }
 
-            var newKeywords = vocab.Keywords.Where(x => !v.Keywords.Select(k => k.Value).Contains(x.Value));
+            var newKeywords = vocab.Keywords.Where(x => !v.Keywords.Select(k => k.Value.ToLower()).Contains(x.Value.ToLower()));
             v.Keywords.AddRange(newKeywords);
-
             store.SqlDb.SaveChanges();
 
             return new VocabularyServiceResult
@@ -111,13 +110,13 @@ namespace Catalogue.Data.Write
                             Description = String.Empty,
                             PublicationDate = DateTime.Now.ToString("MM-yyyy"),
                             Publishable = true,
-                            Keywords =
+                            Keywords = 
                                 keywords.Where(k => k.VocabId == vocabId)
                                         .Select(k => new Keyword(){Value = k.Value})
                                         .ToList()
                         }
                     into vocab
-                    select LimitedVocabularyUpsert(vocab)).ToList();
+                    select AppendKeywords(vocab)).ToList();
         }
 
         public VocabularyServiceResult Insert(Vocabulary vocab)

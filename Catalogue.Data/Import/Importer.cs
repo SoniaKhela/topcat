@@ -11,22 +11,24 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Moq;
 using NUnit.Framework;
-using Raven.Client;
+
 
 namespace Catalogue.Data.Import
 {
     public class Importer<T> where T : IMapping, new()
     {
-        readonly IFileSystem fileSystem;
-        readonly IRecordService recordService;
+        private readonly IFileSystem fileSystem;
+        private readonly IRecordService recordService;
+        private readonly IStore store;
 
         public bool SkipBadRecords { get; set; }
         public readonly RecordValidationIssueSet Failures = new RecordValidationIssueSet();
 
-        public Importer(IFileSystem fileSystem, IRecordService recordService)
+        public Importer(IFileSystem fileSystem, IRecordService recordService, IStore store)
         {
             this.fileSystem = fileSystem;
             this.recordService = recordService;
+            this.store = store;
         }
 
         public void Import(string path)
@@ -61,8 +63,14 @@ namespace Catalogue.Data.Import
                     }
                 }
 
+                //save to sql
+                store.SqlDb.SaveChanges();
+
                 n++;
             }
+
+            //save to raven
+            store.RavenDb.SaveChanges();
         }
     }
 
@@ -74,7 +82,7 @@ namespace Catalogue.Data.Import
         public static Importer<T> CreateImporter<T>(IStore store) where T : IMapping, new()
         {
             var vocabService = new VocabularyService(new VocabularyValidator(store), store); 
-            return new Importer<T>(new FileSystem(), new RecordService(new RecordValidator(vocabService),vocabService, store));
+            return new Importer<T>(new FileSystem(), new RecordService(new RecordValidator(vocabService),vocabService, store), store);
         }
     }
 
@@ -91,7 +99,7 @@ namespace Catalogue.Data.Import
             string path = @"c:\some\path.csv";
             var fileSystem = Mock.Of<IFileSystem>(fs => fs.OpenReader(path) == new StringReader(testData));
 
-            var importer = new Importer<TestDataMapping>(fileSystem, recordService);
+            var importer = new Importer<TestDataMapping>(fileSystem, recordService, Mock.Of<IStore>());
             importer.Import(path);
         }
 

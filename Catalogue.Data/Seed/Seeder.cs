@@ -62,7 +62,7 @@ namespace Catalogue.Data.Seed
             using (var reader = new StreamReader(s))
             {
                 var vocabService = new VocabularyService(new VocabularyValidator(store), store);
-                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(new RecordValidator(vocabService), vocabService, store));
+                var importer = new Importer<MeshMapping>(new FileSystem(), new RecordService(new RecordValidator(vocabService), vocabService, store), store);
                 importer.SkipBadRecords = true; // todo remove when data export is finished
                 importer.Import(reader);
             }
