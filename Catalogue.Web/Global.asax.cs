@@ -10,7 +10,8 @@ using Catalogue.Data;
 using Catalogue.Data.Repository;
 using Catalogue.Web.Logging;
 using Newtonsoft.Json.Serialization;
-using Raven.Client;
+using Raven.Client; 
+using System.Data.Entity;
 
 namespace Catalogue.Web
 {
@@ -63,6 +64,8 @@ namespace Catalogue.Web
         {
             if (ConfigurationManager.AppSettings["Environment"] == "Dev")
             {
+                //Always drop create in development
+                Database.SetInitializer(new DropCreateDatabaseAlways<SqlContext>());
                 // use in-memory database for development
                 DocumentStore = DatabaseFactory.Create(DatabaseFactory.DatabaseConnectionType.InMemory);
 

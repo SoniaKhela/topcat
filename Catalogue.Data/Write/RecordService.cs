@@ -62,6 +62,9 @@ namespace Catalogue.Data.Write
             // currently only supporting dataset resource types
             record.Gemini.ResourceType = "dataset";
 
+            //new records
+            if (record.Id == null || record.Id == Guid.Empty) record.Id = Guid.NewGuid();
+
             CorrectlyOrderKeywords(record);
             StandardiseUnconditionalUseConstraints(record);
 
@@ -118,7 +121,7 @@ namespace Catalogue.Data.Write
             foreach (var keyword in record.Gemini.Keywords.Where(k => !String.IsNullOrWhiteSpace(k.VocabId)))
             {
                 keyword.Id =
-                    store.SqlDb.Keywords.Single(k => k.Value == keyword.Value && k.VocabId == keyword.VocabId).Id;
+                    store.SqlDb.Keywords.Single(k => k.Value.ToLower() == keyword.Value.ToLower() && k.VocabId == keyword.VocabId).Id;
             }
         }
 
