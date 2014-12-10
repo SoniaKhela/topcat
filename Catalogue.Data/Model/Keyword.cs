@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Raven.Imports.Newtonsoft.Json;
+using NewtonsoftJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
+
+//using Raven.Imports.Newtonsoft.Json;
+
 
 namespace Catalogue.Data.Model
 {
@@ -47,9 +52,11 @@ namespace Catalogue.Data.Model
         [JsonIgnore]
         public int Id { get; set; }
 
+        [NewtonsoftJsonIgnore]
         [JsonIgnore]
         public virtual Vocabulary Vocab { get; set; }
 
+        [NewtonsoftJsonIgnore]
         [JsonIgnore]
         public virtual List<Metadata> Metadata { get; set; }
 
