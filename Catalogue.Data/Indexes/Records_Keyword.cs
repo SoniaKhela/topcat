@@ -24,7 +24,7 @@ namespace Catalogue.Data.Indexes
                              select
                                  new
                                      {
-                                         Vocab = docGeminiKeywordsItem.VocabId,
+                                         Vocab = docGeminiKeywordsItem.Vocab,
                                          Value = docGeminiKeywordsItem.Value
                                      };
         }

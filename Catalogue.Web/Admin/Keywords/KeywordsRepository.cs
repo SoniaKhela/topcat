@@ -56,7 +56,7 @@ namespace Catalogue.Web.Admin.Keywords
             //Do this to get around the limit on max number of results returned by raven
             while (VocabBaseQuery(startA).Any(k => k.Value.StartsWith(value)))
             {
-                List<Keyword> current = VocabBaseQuery(startA).Where(k => k.Value.StartsWith(value)).Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
+                List<Keyword> current = VocabBaseQuery(startA).Where(k => k.Value.StartsWith(value)).Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
                     .ToList(); 
                 startA += current.Count;
                 keywords.AddRange(current);
@@ -69,7 +69,7 @@ namespace Catalogue.Web.Admin.Keywords
                 var current =
                     MiscBaseQuery(startB)
                         .Where(k => k.Value.StartsWith(value))
-                        .Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
+                        .Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
                         .ToList();
 
                 startB += current.Count;
@@ -85,7 +85,7 @@ namespace Catalogue.Web.Admin.Keywords
             var keywords = new List<Keyword>();
             while (VocabBaseQuery(start).Any())
             {
-                List<Keyword> current = VocabBaseQuery(start).Select(r => new Keyword {Value = r.Value, VocabId = r.Vocab})
+                List<Keyword> current = VocabBaseQuery(start).Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
                         .ToList();
                 start += current.Count;
                 keywords.AddRange(current);

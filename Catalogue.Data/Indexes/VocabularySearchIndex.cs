@@ -28,8 +28,8 @@ namespace Catalogue.Data.Indexes
                              from k in record.Gemini.Keywords
                              select new
                              {
-                                 Vocab = k.VocabId,
-                                 VocabN = k.VocabId
+                                 Vocab = k.Vocab,
+                                 VocabN = k.Vocab
 
                              };
 

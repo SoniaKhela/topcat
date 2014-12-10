@@ -143,7 +143,7 @@ namespace Catalogue.Data.Import.Mappings
             // add the broad category for activities (not included in the source data)
             keywords.Insert(0, new Keyword
                 {
-                   VocabId = "http://vocab.jncc.gov.uk/jncc-broad-category",
+                   Vocab = "http://vocab.jncc.gov.uk/jncc-broad-category",
                    Value = "Marine Human Activities"
                 });
 
@@ -163,7 +163,7 @@ namespace Catalogue.Data.Import.Mappings
             {
                 return new Keyword
                     {
-                        VocabId = MapSourceVocabToRealVocab(vocabAndValue.ElementAt(0)),
+                        Vocab = MapSourceVocabToRealVocab(vocabAndValue.ElementAt(0)),
                         Value = vocabAndValue.ElementAt(1),
                     };
             }
@@ -276,7 +276,7 @@ namespace Catalogue.Data.Import.Mappings
         {
             // activities data is categorised as 'Marine Human Activities'
             imported.Count(r => r.Gemini.Keywords
-                .Any(k => k.VocabId == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Marine Human Activities"))
+                .Any(k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Marine Human Activities"))
                 .Should().Be(97);
         }
 
@@ -284,7 +284,7 @@ namespace Catalogue.Data.Import.Mappings
         public void should_import_keywords_that_have_no_vocab_namespace()
         {
             imported.SelectMany(r => r.Gemini.Keywords)
-                .Should().Contain(k => k.VocabId.IsBlank() && k.Value == "Extraction");
+                .Should().Contain(k => k.Vocab.IsBlank() && k.Value == "Extraction");
         }
 
         [Test]
@@ -292,7 +292,7 @@ namespace Catalogue.Data.Import.Mappings
         {
             // a test to check that we're converting the short vocab list names to a suitable http namespace 
             imported.SelectMany(r => r.Gemini.Keywords)
-                .All(k => k.VocabId.IsBlank() || k.VocabId.StartsWith("http://"))
+                .All(k => k.Vocab.IsBlank() || k.Vocab.StartsWith("http://"))
                 .Should().BeTrue();
         }
 
@@ -300,7 +300,7 @@ namespace Catalogue.Data.Import.Mappings
         public void should_import_keywords_with_wikipedia_glossary_of_nautical_terms_namespace()
         {
             imported.SelectMany(r => r.Gemini.Keywords)
-                .Should().Contain(k => k.VocabId == "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms");
+                .Should().Contain(k => k.Vocab == "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms");
         }
 
 

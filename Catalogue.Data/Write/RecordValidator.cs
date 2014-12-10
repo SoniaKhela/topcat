@@ -275,13 +275,13 @@ namespace Catalogue.Data.Write
             //mostly for tests.
             if (record.Gemini.Keywords == null) return;
 
-            foreach (var vocabId in record.Gemini.Keywords.Select(k => k.VocabId).Distinct())
+            foreach (var vocabId in record.Gemini.Keywords.Select(k => k.Vocab).Distinct())
             {
                 var vocab = vocabService.Load(vocabId);
 
                 if (vocab != null && vocab.Controlled)
                 {
-                    foreach (var value in record.Gemini.Keywords.Where(k => k.VocabId == vocab.Id).Select(k => k.Value))
+                    foreach (var value in record.Gemini.Keywords.Where(k => k.Vocab == vocab.Id).Select(k => k.Value))
                     {
                         if (!vocab.Keywords.Select(x => x.Value).Contains(value))
                             recordValidationResult.Errors.Add(

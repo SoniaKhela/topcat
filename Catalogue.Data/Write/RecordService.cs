@@ -118,10 +118,10 @@ namespace Catalogue.Data.Write
 
         private void IdentifyKeywords(Record record)
         {
-            foreach (var keyword in record.Gemini.Keywords.Where(k => !String.IsNullOrWhiteSpace(k.VocabId)))
+            foreach (var keyword in record.Gemini.Keywords.Where(k => !String.IsNullOrWhiteSpace(k.Vocab)))
             {
                 keyword.Id =
-                    store.SqlDb.Keywords.Single(k => k.Value.ToLower() == keyword.Value.ToLower() && k.VocabId == keyword.VocabId).Id;
+                    store.SqlDb.Keywords.Single(k => k.Value.ToLower() == keyword.Value.ToLower() && k.Vocab == keyword.Vocab).Id;
             }
         }
 
@@ -145,9 +145,9 @@ namespace Catalogue.Data.Write
         void CorrectlyOrderKeywords(Record record)
         {
             record.Gemini.Keywords = record.Gemini.Keywords
-                .OrderByDescending(k => k.VocabId == "http://vocab.jncc.gov.uk/jncc-broad-category")
-                .ThenByDescending(k => k.VocabId.IsNotBlank())
-                .ThenBy(k => k.VocabId)
+                .OrderByDescending(k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category")
+                .ThenByDescending(k => k.Vocab.IsNotBlank())
+                .ThenBy(k => k.Vocab)
                 .ThenBy(k => k.Value)
                 .ToList();
         }

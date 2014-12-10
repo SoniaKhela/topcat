@@ -40,19 +40,19 @@ namespace Catalogue.Data.Repository
             //Define a one to many relationship between vocabularies in which the keyword also has the id as a property
             modelBuilder.Entity<Vocabulary>()
                         .HasMany(v => v.Keywords)
-                        .WithOptional(k => k.Vocab)
-                        .HasForeignKey(k => k.VocabId);
+                        .WithOptional(k => k.Vocabulary)
+                        .HasForeignKey(k => k.Vocab);
 
             modelBuilder.Entity<Keyword>()
-                        .HasOptional(k => k.Vocab)
+                        .HasOptional(k => k.Vocabulary)
                         .WithMany(v => v.Keywords)
-                        .HasForeignKey(k => k.VocabId);
+                        .HasForeignKey(k => k.Vocab);
 
             //Unique constraint on keyword
             //  Keyword does not need to be in vocab
             modelBuilder
                 .Entity<Keyword>()
-                .Property(k => k.VocabId)
+                .Property(k => k.Vocab)
                 .IsOptional()
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,

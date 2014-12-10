@@ -35,7 +35,7 @@ namespace Catalogue.Data.Import.Mappings
                 select new Keyword
                 {
                     // todo: map the source vocab IDs to "real" ones
-                    VocabId = MapSourceVocabToRealVocab(vocab),
+                    Vocab = MapSourceVocabToRealVocab(vocab),
                     Value = MapSourceKeywordToRealKeyword(keyword),
                 };
 
@@ -177,7 +177,7 @@ namespace Catalogue.Data.Import.Mappings
             List<Keyword> keywords = MeshMapping.ParseMeshKeywords(input);
 
             keywords.Should().HaveCount(5);
-            keywords.Select(k => k.VocabId).Should().ContainInOrder(new[]
+            keywords.Select(k => k.Vocab).Should().ContainInOrder(new[]
             {
                 "http://vocab.jncc.gov.uk/jncc-broad-category",
                 "http://vocab.jncc.gov.uk/original-seabed-classification-system",

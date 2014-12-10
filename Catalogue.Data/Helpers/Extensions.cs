@@ -10,7 +10,7 @@ namespace Catalogue.Data.Helpers
         public static List<Keyword> ToKeywordList(this StringPairList source)
         {
             return source
-                .Select((pair => new Keyword { VocabId = pair.Item1, Value = pair.Item2 }))
+                .Select((pair => new Keyword { Vocab = pair.Item1, Value = pair.Item2 }))
                 .ToList();
         }
 
@@ -18,7 +18,7 @@ namespace Catalogue.Data.Helpers
         {
             return source.Count == other.Count &&
                 source.Zip(other, (a, b) => new { a, b })
-                    .All(x => x.a.VocabId == x.b.VocabId && x.a.Value == x.b.Value);
+                    .All(x => x.a.Vocab == x.b.Vocab && x.a.Value == x.b.Value);
         }
 
         public static List<Extent> ToExtentList(this StringPairList source)

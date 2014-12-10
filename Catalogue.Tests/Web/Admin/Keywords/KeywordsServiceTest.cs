@@ -27,7 +27,7 @@ namespace Catalogue.Tests.Web.Admin.Keywords
         public void ReadAllKeywords()
         {
             ICollection<Keyword> keywords = _keywordsService.ReadAll();
-            List<string> uniqueKeywords = keywords.Select(k => k.VocabId + "::" + k.Value).Distinct().ToList();
+            List<string> uniqueKeywords = keywords.Select(k => k.Vocab + "::" + k.Value).Distinct().ToList();
             Assert.AreEqual(uniqueKeywords.Count, keywords.Count,
                 "The index is not working correctly, should only return unique values");
             Assert.AreEqual(TotalExpectedKeywords, keywords.Count,

@@ -37,7 +37,7 @@ namespace Catalogue.Data.Write
         {
 
             //remove duplicates of existing keywords
-            var existingKeywords = store.SqlDb.Keywords.Where(k => k.VocabId == vocab.Id).Select(v => v.Value);
+            var existingKeywords = store.SqlDb.Keywords.Where(k => k.Vocab == vocab.Id).Select(v => v.Value);
             vocab.Keywords = vocab.Keywords.Where(k => !existingKeywords.Contains(k.Value)).ToList();
             vocab.Keywords = RemoveDuplicateKeywords(vocab.Keywords).ToList();
 
@@ -100,7 +100,7 @@ namespace Catalogue.Data.Write
         {
             if (keywords == null) return new List<VocabularyServiceResult>();
 
-            return (from vocabId in keywords.Select(k => k.VocabId)
+            return (from vocabId in keywords.Select(k => k.Vocab)
                     where !String.IsNullOrWhiteSpace(vocabId)
                     select new Vocabulary
                         {
@@ -111,7 +111,7 @@ namespace Catalogue.Data.Write
                             PublicationDate = DateTime.Now.ToString("MM-yyyy"),
                             Publishable = true,
                             Keywords = 
-                                keywords.Where(k => k.VocabId == vocabId)
+                                keywords.Where(k => k.Vocab == vocabId)
                                         .Select(k => new Keyword(){Value = k.Value})
                                         .ToList()
                         }

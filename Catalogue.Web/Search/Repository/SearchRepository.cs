@@ -62,8 +62,8 @@ namespace Catalogue.Web.Search
                             Name = format.Name,
                         },
                         Keywords = x.Gemini.Keywords
-                            .OrderBy(k => k.VocabId != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
-                            .ThenBy(k => k.VocabId).ToList(),
+                            .OrderBy(k => k.Vocab != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
+                            .ThenBy(k => k.Vocab).ToList(),
                         TopCopy = x.TopCopy,
                         Date = x.Gemini.DatasetReferenceDate,
                     })
@@ -132,8 +132,8 @@ namespace Catalogue.Web.Search
                             Name = format.Name,
                         },
                         Keywords = x.result.Gemini.Keywords
-                            .OrderBy(k => k.VocabId != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
-                            .ThenBy(k => k.VocabId).ToList(),
+                            .OrderBy(k => k.Vocab != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
+                            .ThenBy(k => k.Vocab).ToList(),
                         TopCopy = x.result.TopCopy,
                         Date = x.result.Gemini.DatasetReferenceDate,
                     })
@@ -153,7 +153,7 @@ namespace Catalogue.Web.Search
 
             IQueryable<Record> query = _db.Query<Record>()
                 .Statistics(out stats)
-                .Where(r => r.Gemini.Keywords.Any(k => k.VocabId.Equals(searchInputModel.Query)));
+                .Where(r => r.Gemini.Keywords.Any(k => k.Vocab.Equals(searchInputModel.Query)));
 
             int skipNumber = searchInputModel.PageNumber * searchInputModel.NumberOfRecords;
 
@@ -179,8 +179,8 @@ namespace Catalogue.Web.Search
                                    Name = format.Name,
                                },
                                Keywords = x.Gemini.Keywords
-                                   .OrderBy(k => k.VocabId != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
-                                   .ThenBy(k => k.VocabId).ToList(),
+                                   .OrderBy(k => k.Vocab != "http://vocab.jncc.gov.uk/jncc-broad-category") // show first
+                                   .ThenBy(k => k.Vocab).ToList(),
                                TopCopy = x.TopCopy,
                                Date = x.Gemini.DatasetReferenceDate,
                            })

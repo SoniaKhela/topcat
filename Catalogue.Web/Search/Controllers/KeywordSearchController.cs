@@ -19,7 +19,7 @@ namespace Catalogue.Web.Controllers.Search
             var keyword = new Keyword()
             {
                 Value = value,
-                VocabId = vocab
+                Vocab = vocab
             };
             var searchInputModel = new SearchInputModel()
             {

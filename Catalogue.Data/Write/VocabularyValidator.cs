@@ -76,7 +76,7 @@ namespace Catalogue.Data.Write
             {
                 result.Add(new VocabularyValidationResultMessage
                     {
-                        FieldName = newKeyword.VocabId,
+                        FieldName = newKeyword.Vocab,
                         Message =
                             String.Format(
                                 "The keyword {0} cannot be added to the vocabulary {1} because it is controlled",

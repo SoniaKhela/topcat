@@ -19,12 +19,12 @@ namespace Catalogue.Data.Model
         public Keyword(string value, string vocab)
         {
             Value = value;
-            VocabId = vocab;
+            Vocab = vocab;
         }
 
         protected bool Equals(Keyword other)
         {
-            return string.Equals(Value, other.Value, StringComparison.InvariantCultureIgnoreCase) && string.Equals(VocabId, other.VocabId, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(Value, other.Value, StringComparison.InvariantCultureIgnoreCase) && string.Equals(Vocab, other.Vocab, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public int CompareTo(Keyword other)
@@ -45,7 +45,7 @@ namespace Catalogue.Data.Model
         {
             unchecked
             {
-                return (this.VocabId + "::" + this.Value).GetHashCode()*397;
+                return (this.Vocab + "::" + this.Value).GetHashCode()*397;
             }
         }
 
@@ -54,7 +54,7 @@ namespace Catalogue.Data.Model
 
         [NewtonsoftJsonIgnore]
         [JsonIgnore]
-        public virtual Vocabulary Vocab { get; set; }
+        public virtual Vocabulary Vocabulary { get; set; }
 
         [NewtonsoftJsonIgnore]
         [JsonIgnore]
@@ -64,6 +64,6 @@ namespace Catalogue.Data.Model
         public string Value { get; set; }
 
         [MaxLength(450)]
-        public string VocabId { get; set; }
+        public string Vocab { get; set; }
     }
 }
