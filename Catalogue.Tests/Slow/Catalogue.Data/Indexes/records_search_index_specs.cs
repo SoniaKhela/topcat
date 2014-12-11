@@ -11,7 +11,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         [Test]
         public void can_search_partial_matches()
         {
-            List<Record> results = Db.Advanced.LuceneQuery<Record>("Records/Search")
+            List<Record> results = Db.RavenDb.Advanced.LuceneQuery<Record>("Records/Search")
                 .Search("TitleN", "stu") // search the ngrammed title field for 'stu'
                 .Take(100)
                 .ToList();

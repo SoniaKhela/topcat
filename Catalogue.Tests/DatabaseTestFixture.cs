@@ -1,4 +1,5 @@
 using Catalogue.Data;
+using Catalogue.Data.Repository;
 using Catalogue.Data.Seed;
 using Catalogue.Data.Test;
 using NUnit.Framework;
@@ -23,12 +24,12 @@ namespace Catalogue.Tests
         /// <summary>
         /// A document session open for the lifetime of the test fixture.
         /// </summary>
-        protected IDocumentSession Db;
+        protected Store Db;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            Db = ReusableDocumentStore.OpenSession();
+            Db = new Store(ReusableDocumentStore.OpenSession(), new SqlContext()); 
         }
 
         [TestFixtureTearDown]

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.SqlClient;
 using System.Web.Http;
-using Catalogue.Data.Indexes;
-using System.Linq;
-using Catalogue.Web.Admin.Keywords;
+using Catalogue.Data.Repository;
 using Raven.Client;
+using System.Linq;
 
 namespace Catalogue.Web.Controllers.Search
 {
     public class VocabularyTypeaheadController : ApiController
     {
-        private readonly IDocumentSession _db;
+        private readonly IStore _db;
 
-        public VocabularyTypeaheadController(IDocumentSession db)
+        public VocabularyTypeaheadController(IStore db)
         {
             _db = db;
         }
@@ -21,12 +21,11 @@ namespace Catalogue.Web.Controllers.Search
         {
             if (String.IsNullOrWhiteSpace(q)) return new List<string>();
 
-            var containsTerm = "*" + q.Trim().Replace("*", String.Empty) + "*";
+            var containsTerm = "%" + q.Trim().Replace("*", String.Empty) + "%";
 
-            return _db.Query<VocabularyIndex.Result, VocabularyIndex>()
-                .Search(k => k.Vocab, containsTerm, escapeQueryOptions: EscapeQueryOptions.AllowAllWildcards)
-                .Select(k => k.Vocab)
-                .ToList();
+            return (from v in _db.SqlDb.Vocabularies
+                    where SqlMethods.Like(v.Id, containsTerm)
+                    select v.Id).ToList();
         }
     }
 }

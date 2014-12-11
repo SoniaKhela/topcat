@@ -30,7 +30,7 @@ namespace Catalogue.Data.Write
 
         public Vocabulary Load(string id)
         {
-            return store.SqlDb.Vocabularies.FirstOrDefault(v => v.Id == id);
+            return store.SqlDb.Vocabularies.First(v => v.Id == id);
         }
 
         private VocabularyServiceResult UpsertVocabulary(Vocabulary vocab, VocabularyValidationResult validationResult)

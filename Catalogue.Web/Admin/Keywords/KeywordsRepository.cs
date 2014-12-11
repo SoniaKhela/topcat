@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Catalogue.Data.Indexes;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Raven.Client;
 
 namespace Catalogue.Web.Admin.Keywords
@@ -19,10 +20,10 @@ namespace Catalogue.Web.Admin.Keywords
 
     public class KeywordsRepository : IKeywordsRepository
     {
-        private readonly IDocumentSession _db;
+        private readonly IStore _db;
 
 
-        public KeywordsRepository(IDocumentSession db)
+        public KeywordsRepository(IStore db)
         {
             _db = db;
         }
@@ -49,65 +50,21 @@ namespace Catalogue.Web.Admin.Keywords
 
         public ICollection<Keyword> ReadByValue(string value)
         {
-            int startA = 0;
-            var keywords = new List<Keyword>();
+            if (value == null) return new List<Keyword>();
 
-            //Get matching keywords from Vocab table
-            //Do this to get around the limit on max number of results returned by raven
-            while (VocabBaseQuery(startA).Any(k => k.Value.StartsWith(value)))
-            {
-                List<Keyword> current = VocabBaseQuery(startA).Where(k => k.Value.StartsWith(value)).Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
-                    .ToList(); 
-                startA += current.Count;
-                keywords.AddRange(current);
-            }
-
-            var startB = 0;
-            //Get misc keywords from Records table
-            while (MiscBaseQuery(startB).Any(k => k.Value.StartsWith(value)))
-            {
-                var current =
-                    MiscBaseQuery(startB)
-                        .Where(k => k.Value.StartsWith(value))
-                        .Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
-                        .ToList();
-
-                startB += current.Count;
-                keywords.AddRange(current);
-            }
-
-            return keywords;
+            return GetKeywordByValue(value);
         }
 
         public ICollection<Keyword> ReadAll()
         {
-            int start = 0;
-            var keywords = new List<Keyword>();
-            while (VocabBaseQuery(start).Any())
-            {
-                List<Keyword> current = VocabBaseQuery(start).Select(r => new Keyword {Value = r.Value, Vocab = r.Vocab})
-                        .ToList();
-                start += current.Count;
-                keywords.AddRange(current);
-            }
-
-
-            return keywords;
+            return GetKeywordByValue(null);
         }
 
-        private IQueryable<VocabularyKeywordIndex.Result> VocabBaseQuery(int start)
+        private ICollection<Keyword> GetKeywordByValue(string value)
         {
-            return _db.Query<VocabularyKeywordIndex.Result, VocabularyKeywordIndex>()
-                .Skip(start)
-                .Take(1024);
-        }
-
-        private IQueryable<KeywordsSearchIndex.Result> MiscBaseQuery(int start)
-        {
-            return _db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
-                      .Where(x => x.Vocab == String.Empty)
-                      .Skip(start)
-                      .Take(1024);
+            return (from k in _db.SqlDb.Keywords
+                    where k.Value == value || value == null
+                    select k).ToList();
         }
 
     }

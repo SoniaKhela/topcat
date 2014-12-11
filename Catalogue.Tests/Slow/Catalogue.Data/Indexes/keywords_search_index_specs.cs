@@ -15,7 +15,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         [Test]
         public void should_be_exactly_one_mesh_data_broad_category_result()
         {
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Where(
                     k => k.Vocab == "http://vocab.jncc.gov.uk/jncc-broad-category" && k.Value == "Seabed Habitat Maps")
                 .Count().Should().Be(1);
@@ -24,7 +24,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         [Test]
         public void should_be_able_to_get_all_vocabs_in_order()
         {
-            List<KeywordsSearchIndex.Result> results = Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            List<KeywordsSearchIndex.Result> results = Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .OrderBy(r => r.Vocab)
                 .Take(1000).ToList();
 
@@ -47,15 +47,15 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         {
             // use the ngram search field for partial matches
 
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Search(r => r.ValueN, "se")
                 .Count().Should().BeGreaterOrEqualTo(1);
 
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Search(r => r.ValueN, "seab")
                 .Count().Should().Be(1);
 
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Search(r => r.ValueN, "seabe")
                 .Count().Should().Be(1);
         }
@@ -64,12 +64,12 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         public void can_search_exact_matches()
         {
             // have to use vanilla linq
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Where(r => r.Value.Equals("seabed habitat maps"))
                 .Count().Should().Be(1);
 
             // just make sures the linq query is case insensitive
-            Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .Where(r => r.Value.Equals("Seabed Habitat Maps"))
                 .Count().Should().Be(1);
             
@@ -78,7 +78,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Indexes
         [Test, Explicit]
         public void write_all_results()
         {
-            List<KeywordsSearchIndex.Result> results = Db.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
+            List<KeywordsSearchIndex.Result> results = Db.RavenDb.Query<KeywordsSearchIndex.Result, KeywordsSearchIndex>()
                 .OrderBy(r => r.Vocab).ThenBy(r => r.Value)
                 .Take(1000)
                 .ToList();

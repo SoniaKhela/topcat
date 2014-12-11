@@ -3,6 +3,7 @@ using System.Linq;
 using Catalogue.Data.DataFormats;
 using Catalogue.Data.Indexes;
 using Catalogue.Data.Model;
+using Catalogue.Data.Repository;
 using Catalogue.Utilities.Text;
 using Catalogue.Web.Controllers.Search;
 using Raven.Client;
@@ -20,10 +21,9 @@ namespace Catalogue.Web.Search
     {
         private readonly IDocumentSession _db;
 
-
-        public SearchRepository(IDocumentSession db)
+        public SearchRepository(IStore store)
         {
-            _db = db;
+            _db = store.RavenDb;
         }
 
         public SearchOutputModel FindByKeyword(SearchInputModel searchInputModel)

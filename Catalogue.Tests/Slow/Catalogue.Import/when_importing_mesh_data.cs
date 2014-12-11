@@ -19,7 +19,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Import
             // the DatabaseTestFixture will already have done the import ..!
             // let's store everything in a list to allow standard linq-to-object queries
             // (all mesh records have a "GUI" field which seems to be unique and starts with 'GB')
-            imported = Db.Query<Record>().Take(1000).ToList()
+            imported = Db.RavenDb.Query<Record>().Take(1000).ToList()
                 .Where(r => r.SourceIdentifier.IsNotBlank() && r.SourceIdentifier.StartsWith("GB"))
                 .ToList();
         }

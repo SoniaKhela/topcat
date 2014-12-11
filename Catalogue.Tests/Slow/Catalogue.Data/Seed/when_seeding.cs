@@ -13,7 +13,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Seed
         [Test]
         public void should_seed_example_readonly_record()
         {
-            Record record = Db.Query<Record>()
+            Record record = Db.RavenDb.Query<Record>()
                 .First(r => r.Gemini.Title.StartsWith("An example read-only record"));
 
             record.ReadOnly.Should().BeTrue();
@@ -22,7 +22,7 @@ namespace Catalogue.Tests.Slow.Catalogue.Data.Seed
         [Test]
         public void should_seed_small_box_record()
         {
-            Db.Query<Record>().Count(r => r.Gemini.Title == "Small Box").Should().Be(1);
+            Db.RavenDb.Query<Record>().Count(r => r.Gemini.Title == "Small Box").Should().Be(1);
         }
     }
 }

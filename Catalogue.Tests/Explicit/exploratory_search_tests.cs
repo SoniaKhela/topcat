@@ -14,10 +14,10 @@ namespace Catalogue.Tests.Explicit
         public void can_search()
         {
             // sanity check the seed data has loaded
-            Db.Query<Record>().Count().Should().BeGreaterThan(100);
+            Db.RavenDb.Query<Record>().Count().Should().BeGreaterThan(100);
 
             string q = "broad bio";
-            List<Record> list = Db.Advanced.LuceneQuery<Record>("Records/Search")
+            List<Record> list = Db.RavenDb.Advanced.LuceneQuery<Record>("Records/Search")
                 .Search("Title", q + "*").Boost(10)
                 .ToList();
 
@@ -34,7 +34,7 @@ namespace Catalogue.Tests.Explicit
         {
             FieldHighlightings lites;
 
-            List<Record> results = Db.Advanced.LuceneQuery<Record>("Records/Search")
+            List<Record> results = Db.RavenDb.Advanced.LuceneQuery<Record>("Records/Search")
                 .Highlight("Title", 128, 2, out lites)
                 .SetHighlighterTags("<strong>", "</strong>")
                 .Search("Title", "north").Boost(10)

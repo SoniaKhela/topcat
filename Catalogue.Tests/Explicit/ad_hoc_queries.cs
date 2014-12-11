@@ -10,7 +10,7 @@ namespace Catalogue.Tests.Explicit
         [Explicit, Test]
         public void weird_characters()
         {
-            List<Record> records = Db.Advanced.LuceneQuery<Record>("Records/Search")
+            List<Record> records = Db.RavenDb.Advanced.LuceneQuery<Record>("Records/Search")
                 .Search("Abstract", "Loch Maddy monitoring trials")
                 .ToList();
         }
