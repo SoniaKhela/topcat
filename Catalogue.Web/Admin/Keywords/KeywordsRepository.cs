@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using Catalogue.Data.Indexes;
 using Catalogue.Data.Model;
@@ -63,7 +64,7 @@ namespace Catalogue.Web.Admin.Keywords
         private ICollection<Keyword> GetKeywordByValue(string value)
         {
             return (from k in _db.SqlDb.Keywords
-                    where k.Value == value || value == null
+                    where value == null || k.Value.Contains(value)
                     select k).ToList();
         }
 

@@ -21,10 +21,8 @@ namespace Catalogue.Web.Controllers.Search
         {
             if (String.IsNullOrWhiteSpace(q)) return new List<string>();
 
-            var containsTerm = "%" + q.Trim().Replace("*", String.Empty) + "%";
-
             return (from v in _db.SqlDb.Vocabularies
-                    where SqlMethods.Like(v.Id, containsTerm)
+                    where v.Id.Contains(q)
                     select v.Id).ToList();
         }
     }

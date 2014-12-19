@@ -112,24 +112,24 @@ namespace Catalogue.Data.Write
 
         private IEnumerable<VocabularyValidationResultMessage> ValidateKeywordChanges(Vocabulary source, Vocabulary target)
         {
-            if (target == null) return new List<VocabularyValidationResultMessage>();
+            var results = new List<VocabularyValidationResultMessage>();
 
-            //where target contains source id and target contains source value
+            if (target != null)
+            {
+                results.AddRange(from sk in source.Keywords.Where(sk => sk.Id != 0 && target.Keywords.Any(tk => tk.Id != sk.Id && tk.Value.ToLower() == sk.Value.ToLower()))
+                                 let sk1 = sk
+                                 let tk = target.Keywords.Single(k => k.Id == sk1.Id)
+                                 where tk != null
+                                 select new VocabularyValidationResultMessage
+                                     {
+                                         FieldName = sk.Id.ToString(), Message = String.Format("Cannot change the value of keyword {0} to {1} because it will create a duplicate keyword", tk.Value, sk.Value)
+                                     });
+            }
 
-            return (from dk in
-                        target.Keywords.Where(
-                            t =>
-                            source.Keywords.Where(k => target.Keywords.Select(x => x.Id).Contains(k.Id))
-                                  .Select(k => k.Value.ToLower())
-                                  .Contains(t.Value.ToLower()))
-                    let sourceVal = source.Keywords.Where(x => x.Id == dk.Id).Select(k => k.Value)
-                    select new VocabularyValidationResultMessage
-                        {
-                            FieldName = dk.Id.ToString(),
-                            Message = String.Format(
-                                "Cannot change the value of keyword {0} to {1} because it will create a duplicate keyword",
-                                dk.Value, sourceVal)
-                        }).ToList();
+
+            return results;
+            //select from source where source value doesn't match target value
+
         }
 
         private VocabularyValidationResultMessage ValidatePublicationDate(string publicationDate)

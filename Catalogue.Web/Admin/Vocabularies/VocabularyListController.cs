@@ -11,8 +11,10 @@ namespace Catalogue.Web.Controllers.Vocabularies
 {
     public class VocabularyListResult
     {
-        public string Vocab { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
+        public string Id { get; set; }
+
     }
 
     public class VocabularyListController : ApiController
@@ -30,7 +32,8 @@ namespace Catalogue.Web.Controllers.Vocabularies
                     orderby v.Id descending 
                     select new VocabularyListResult()
                         {
-                            Vocab = v.Id,
+                            Id = v.Id,
+                            Name = v.Name,
                             Description = v.Description
                         }).ToList();
         }

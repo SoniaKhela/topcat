@@ -15,6 +15,6 @@ namespace Catalogue.Data.Model
         public bool Controlled { get; set; } // is this a controlled (limited) list or are new values allowed?
         public bool Publishable { get; set; } // is this a vocabulary of publishable keywords?
      
-        public List<Keyword> Keywords { get; set; }
+        public virtual List<Keyword> Keywords { get; set; }
     }
 }
