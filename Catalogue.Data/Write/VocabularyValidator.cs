@@ -46,14 +46,10 @@ namespace Catalogue.Data.Write
 
             var targetVocab = store.SqlDb.Vocabularies.SingleOrDefault(x => x.Id == sourceVocab.Id);
 
-            //check existing keyword values haven't been changed to duplicate other existing values
-            result.Errors.AddRange(ValidateKeywordChanges(sourceVocab, targetVocab));
-            
-            //Check for updates to controlled vocabs and duplicates that will be removed and warn
-            result.Warnings.AddRange(ValidateKeywordAdditions(sourceVocab, targetVocab));
+            //check for duplicates 
+            result.Errors.AddRange(ValidateDuplicatedKeywords(sourceVocab, targetVocab, allowControlledUpdates));
 
-            //validate additions to controlled vocabs
-
+            //validate changes to controlled vocabs
             result.Errors.AddRange(ValidateControlledVocab(sourceVocab, targetVocab, allowControlledUpdates));
 
             //check publication date format.
@@ -61,6 +57,19 @@ namespace Catalogue.Data.Write
             if (r2 != null) result.Errors.Add(r2);
 
             return result;
+        }
+
+        private IEnumerable<VocabularyValidationResultMessage> ValidateDuplicatedKeywords(Vocabulary sourceVocab, Vocabulary targetVocab, bool allowControlledUpdates)
+        {
+
+            var duplicatesVals =  (from keyword in sourceVocab.Keywords
+                    group keyword by keyword.Value.ToLowerInvariant()
+                    into g
+                    select g.OrderBy(p => p.Value).First()).ToList();
+
+            var dupedKeys = from keyword in sourceVocab.Keywords
+                            where duplicatesVals.Contains(keyword.Value, StringComparer.InvariantCultureIgnoreCase)
+                            select keyword;
         }
 
         private List<VocabularyValidationResultMessage> ValidateControlledVocab(Vocabulary sourceVocab, Vocabulary targetVocab, bool allowControlledUpdates)
