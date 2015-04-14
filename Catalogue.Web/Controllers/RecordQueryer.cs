@@ -12,7 +12,7 @@ namespace Catalogue.Web.Controllers
     public interface IRecordQueryer
     {
         RecordQueryOutputModel SearchQuery(RecordQueryInputModel input);
-        IEnumerable<Record> RecordQuery(RecordQueryInputModel input);
+        IQueryable<Record> RecordQuery(RecordQueryInputModel input);
     }
 
     public class RecordQueryer : IRecordQueryer
@@ -36,7 +36,7 @@ namespace Catalogue.Web.Controllers
         /// Can be materialised as-is, or customised further (see SearchQuery method).
         /// We may need to refactor this to support ravendb streaming for larger result sets.
         /// </summary>
-        public IEnumerable<Record> RecordQuery(RecordQueryInputModel input)
+        public IQueryable<Record> RecordQuery(RecordQueryInputModel input)
         {
             var query = _db.Query<RecordIndex.Result, RecordIndex>()
                 .Statistics(out stats)
@@ -64,10 +64,10 @@ namespace Catalogue.Web.Controllers
                 }
             }
 
-            return query.As<Record>() // ravendb method to project from the index result type to the actual document type
-                    .Skip(input.P * input.N)
-                    .Take(input.N)
-                    .ToList();
+            return query.As<Record>()
+                // ravendb method to project from the index result type to the actual document type
+                .Skip(input.P*input.N)
+                .Take(input.N);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Catalogue.Web.Controllers
         /// </summary>
         public RecordQueryOutputModel SearchQuery(RecordQueryInputModel input)
         {
-            var query = from r in RecordQuery(input)
+            var query = from r in RecordQuery(input).ToList()
                         let titleFragments = titleLites.GetFragments("records/" + r.Id).Concat(titleNLites.GetFragments("records/" + r.Id))
                         let abstractFragments = abstractLites.GetFragments("records/" + r.Id).Concat(abstractNLites.GetFragments("records/" + r.Id))
                         let title = titleFragments.Select(f => f.TruncateNicely(200)).FirstOrDefault()

@@ -14,9 +14,10 @@ namespace Catalogue.Data.Export
 {
     public class Exporter
     {
-        public void Export(IEnumerable<Record> records, TextWriter writer)
+
+        public void Export(IEnumerable<Record> records, StreamWriter stream)
         {
-            var csv = new CsvWriter(writer);
+            var csv = new CsvWriter(stream);
             csv.Configuration.Delimiter = "\t";
             csv.Configuration.PrefixReferenceHeaders = true;
             TypeConverterFactory.AddConverter<List<MetadataKeyword>>(new MetadataKeywordConverter());
