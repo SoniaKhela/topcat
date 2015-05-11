@@ -23,13 +23,93 @@ namespace Catalogue.Data.Import.Mappings
         public ActivitiesMapping()
         {
             //Vocabs are provided in the seeder.
-            RequiredVocabularies = new List<Vocabulary>();
+            RequiredVocabularies = new List<Vocabulary>
+            {
+                //only for empty test systems
+                Vocabularies.JnccCategory,
+                Vocabularies.JnccDomain,
+
+                new Vocabulary()
+                {
+                    Id = "http://www.bmapa.org/documents/BMAPA_Glossary.pdf",
+                    Name = "BMAPA",
+                    Description = "http://www.bmapa.org/documents/BMAPA_Glossary.pdf",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+
+                new Vocabulary()
+                {
+                    Id = "http://www.fao.org/fi/glossary/aquaculture/",
+                    Name = "FAO",
+                    Description = "http://www.fao.org/faoterm/collection/aquaculture/en/",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+
+                new Vocabulary()
+                {
+                    Id = "http://www.generalcable.com/GeneralCable/en-US/Resources/Glossary/",
+                    Name = "General Cable",
+                    Description = "http://www.generalcable.com/GeneralCable/en-US/Resources/Glossary/",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+
+                new Vocabulary()
+                {
+                    Id = "http://www.snh.org.uk/publications/on-line/heritagemanagement/erosion/7.1.shtml",
+                    Name = "SNH",
+                    Description = "http://www.snh.org.uk/publications/on-line/heritagemanagement/erosion/7.1.shtml",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://evidence.environment-agency.gov.uk/FCERM/Libraries/Fluvial_Documents/Glossary.sflb.ashx",
+                    Name = "EA",
+                    Description = "http://evidence.environment-agency.gov.uk/FCERM/Libraries/Fluvial_Documents/Glossary.sflb.ashx",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://www.bgs.ac.uk/mineralsUK/glossary.html",
+                    Name = "BGS",
+                    Description = "http://www.bgs.ac.uk/mineralsUK/glossary.html",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms",
+                    Name = "WikiShipping",
+                    Description = "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://www.dtic.mil/doctrine/dod_dictionary/",
+                    Name = "DOD",
+                    Description = "http://www.dtic.mil/doctrine/dod_dictionary/",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://en.wikipedia.org/wiki/Glossary_of_fishery_terms",
+                    Name = "WikiFish",
+                    Description = "http://en.wikipedia.org/wiki/Glossary_of_fishery_terms",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+                new Vocabulary()
+                {
+                    Id = "http://www.enchantedlearning.com/wordlist/energy.shtml",
+                    Name = "Entergy",
+                    Description = "http://www.enchantedlearning.com/wordlist/energy.shtml",
+                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                },
+            };
         }
 
         public void Apply(CsvConfiguration config)
         {
             // see http://joshclose.github.io/CsvHelper/
-
+            config.Delimiter = "\t";
+            config.QuoteAllFields = true;
             config.TrimFields = true;
             config.RegisterClassMap<RecordMap>();
             config.RegisterClassMap<GeminiMap>();
@@ -44,10 +124,13 @@ namespace Catalogue.Data.Import.Mappings
                 Map(m => m.TopCopy).ConvertUsing(row => false); // activities data is not top copy
                 Map(m => m.Status).ConvertUsing(row => Status.Internal); // activities data is not publishable
                 Map(m => m.Notes).Name("JNCC Notes");
+                Map(m => m.Validation).ConvertUsing(row => Validation.Gemini); //Validate to Gemini standard
+                Map(m => m.Review).ConvertUsing<DateTime?>(row => null);
 
                 References<GeminiMap>(m => m.Gemini);
             }
         }
+
 
         public class GeminiMap : CsvClassMap<Metadata>
         {
@@ -105,7 +188,7 @@ namespace Catalogue.Data.Import.Mappings
                 {
                     return ImportUtility.ParseDate(row.GetField("Metadata date"));
                 });
-                Map(m => m.ResourceType).Name("Resource type "); // only use dataset atm
+                Map(m => m.ResourceType).Name("Resource type"); // only use dataset atm
 //                Map(m => m.MetadataLanguage); // Not available
                 Map(m => m.MetadataPointOfContact).ConvertUsing(row =>
                 {

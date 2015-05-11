@@ -57,9 +57,19 @@ namespace Catalogue.Web.Controllers.Ingest
             var importer = Importer.CreateImporter<T>(db);
             importer.SkipBadRecords = ingest.SkipBadRecords;
 
-            importer.Import(ImportFolderPath + ingest.FileName);
-            db.SaveChanges();
-
+            try
+            {
+                importer.Import(ImportFolderPath + ingest.FileName);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return new IngestResult
+                {
+                    Exception = e.Message,
+                    Success = false
+                };
+            }
 
             return new IngestResult
             {

@@ -10,9 +10,9 @@ namespace Catalogue.Data.Import
 {
     public class ImportUtility
     {
-        public static string ParseDate(string d)
+        public static DateTime ParseDate(string d)
         {
-            return d.IsNotBlank() ? DateTime.Parse(d).ToString("yyyy-MM-dd") : String.Empty;
+            return d.IsNotBlank() ? DateTime.Parse(d) : DateTime.Now;
         }
     }
 }

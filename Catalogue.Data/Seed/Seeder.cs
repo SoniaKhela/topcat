@@ -212,39 +212,10 @@ namespace Catalogue.Data.Seed
 
         void AddVocabularies()
         {
-            var jnccDomain = new Vocabulary
-            {
-                Id = "http://vocab.jncc.gov.uk/jncc-domain",
-                Name = "JNCC Domain",
-                Description = "Groups metadata records into broad areas.",
-                PublicationDate = "2015",
-                Publishable = true,
-                Controlled = true,
-                Keywords = new List<VocabularyKeyword>
-                        {
-                            new VocabularyKeyword { Value = "Marine" },
-                            new VocabularyKeyword { Value = "Freshwater" },
-                            new VocabularyKeyword { Value = "Terrestrial" },
-                            new VocabularyKeyword { Value = "Atmosphere" },
-                        }
-            };
+            var jnccDomain = Vocabularies.JnccDomain;
             db.Store(jnccDomain);
 
-            var jnccCategory = new Vocabulary
-                {
-                    Id = "http://vocab.jncc.gov.uk/jncc-category",
-                    Name = "JNCC Category",
-                    Description = "Groups metadata records into collections.",
-                    PublicationDate = "2015",
-                    Publishable = true,
-                    Controlled = true,
-                    Keywords = new List<VocabularyKeyword>
-                        {
-                            new VocabularyKeyword { Value = "Seabed Habitat Maps" },
-                            new VocabularyKeyword { Value = "Human Activities" },
-                            new VocabularyKeyword { Value = "Publications" },
-                        }
-                };
+            var jnccCategory = Vocabularies.JnccCategory;
             db.Store(jnccCategory);
 
             var referenceManagerCode = new Vocabulary

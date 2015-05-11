@@ -22,18 +22,10 @@ namespace Catalogue.Data.Import.Mappings
             {
                 return new List<Vocabulary>
                 {
-                    // do we need to add jncc-domain and jncc-category ??
+                    //only for empty test systems
+                    Vocabularies.JnccCategory,
+                    Vocabularies.JnccDomain,
 
-//                    new Vocabulary
-//                        {
-//                            Id = "http://vocab.jncc.gov.uk/jncc-category",
-//                            Name = "JNCC Category",
-//                            Description = "The broad dataset categories used within JNCC.",
-//                            Controlled = true,
-//                            Publishable = true,
-//                            PublicationDate = "2015",
-//                            Keywords = new List<VocabularyKeyword>()
-//                        },
                     new Vocabulary
                         {
                             Id = "http://vocab.jncc.gov.uk/publications",
