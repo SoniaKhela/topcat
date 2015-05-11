@@ -1,5 +1,6 @@
 ﻿(function() {
   angular.module('app.controllers').controller('IngestController', function($scope, $http) {
+    var errors;
     $scope["import"] = {
       id: 0,
       fileName: '',
@@ -20,6 +21,20 @@
         name: 'Publications'
       }
     ];
+    errors = [];
+    $scope.errors = {
+      current: errors,
+      add: function(message) {
+        var n, remove;
+        n = {
+          message: message
+        };
+        errors.push(n);
+        return remove = function() {
+          return errors.splice($.inArray(n, errors));
+        };
+      }
+    };
     return $scope.runImport = function() {
       var processResult;
       processResult = function(response) {
@@ -27,7 +42,8 @@
           $scope.notifications.add('Import run successfully');
         } else {
           $scope.notifications.add('Import failed');
-          $scope.notifications.add(response.data.exception);
+          $scope.errors.remove;
+          $scope.errors.add(response.data.exception);
         }
         return $scope.busy.stop();
       };

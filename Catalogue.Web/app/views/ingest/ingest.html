@@ -20,4 +20,11 @@
     <div>
         <button ng-click="runImport()" class="btn">Import Data</button>
     </div>
+    <div>
+        <div ng-show="errors.current.length">
+            <span ng-repeat="n in errors.current">
+                <span>{{ n.message }}</span>
+            </span>
+        </div>
+    </div>
 </div>
