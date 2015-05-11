@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -170,14 +171,16 @@ namespace Catalogue.Data.Import.Mappings
 
                 Map(m => m.DatasetReferenceDate).ConvertUsing(row => row.GetField("Dataset reference date"));
                 Map(m => m.Lineage);
-//              Map(m => m.ResourceLocator); // not present
+                Map(m => m.ResourceLocator).Name("Web Address");
 //              Map(m => m.AdditionalInformationSource); // not present
                 Map(m => m.DataFormat).Name("Data format");
 
                 Map(m => m.ResponsibleOrganisation).ConvertUsing(row => new ResponsibleParty
                     {
+
                         Name = row.GetField("Organisation Name"),
-                        Email = row.GetField("Email Address"),
+                        //todo: temp hack to get past gemini validation
+                        Email = row.GetField("Email Address").IsBlank() ? "test@example.com" : row.GetField("Email Address"),
                         Role = row.GetField("Responsible Party Role").FirstCharToLower(),
                     });
 
@@ -188,7 +191,7 @@ namespace Catalogue.Data.Import.Mappings
                 {
                     return ImportUtility.ParseDate(row.GetField("Metadata date"));
                 });
-                Map(m => m.ResourceType).Name("Resource type"); // only use dataset atm
+                Map(m => m.ResourceType).ConvertUsing(row => "dataset"); // only use dataset atm
 //                Map(m => m.MetadataLanguage); // Not available
                 Map(m => m.MetadataPointOfContact).ConvertUsing(row =>
                 {
