@@ -49,6 +49,7 @@ namespace Catalogue.Data.Import.Mappings
                             Controlled = false,
                             Publishable = true,
                             PublicationDate = "2015",
+                            Keywords = new List<VocabularyKeyword>()
                         },
                         new Vocabulary
                         {
@@ -58,6 +59,7 @@ namespace Catalogue.Data.Import.Mappings
                             Controlled = false,
                             Publishable = true,
                             PublicationDate = "2015",
+                            Keywords = new List<VocabularyKeyword>()
                         },
                         new Vocabulary
                         {
@@ -67,6 +69,7 @@ namespace Catalogue.Data.Import.Mappings
                             Controlled = false,
                             Publishable = true,
                             PublicationDate = "2015",
+                            Keywords = new List<VocabularyKeyword>()
                         }
                 };
             }

@@ -12,7 +12,7 @@ namespace Catalogue.Data.Import
     {
         public static DateTime ParseDate(string d)
         {
-            return d.IsNotBlank() ? DateTime.Parse(d) : DateTime.Now;
+                return d.IsNotBlank() ? DateTime.Parse(d) : DateTime.Now;
         }
     }
 }

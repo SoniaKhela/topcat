@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,9 @@ namespace Catalogue.Data.Import.Mappings
                     Id = "http://www.bmapa.org/documents/BMAPA_Glossary.pdf",
                     Name = "BMAPA",
                     Description = "http://www.bmapa.org/documents/BMAPA_Glossary.pdf",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import,
+                    Keywords = new List<VocabularyKeyword>()
+                    
                 },
 
                 new Vocabulary()
@@ -43,7 +46,8 @@ namespace Catalogue.Data.Import.Mappings
                     Id = "http://www.fao.org/fi/glossary/aquaculture/",
                     Name = "FAO",
                     Description = "http://www.fao.org/faoterm/collection/aquaculture/en/",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
 
                 new Vocabulary()
@@ -51,7 +55,8 @@ namespace Catalogue.Data.Import.Mappings
                     Id = "http://www.generalcable.com/GeneralCable/en-US/Resources/Glossary/",
                     Name = "General Cable",
                     Description = "http://www.generalcable.com/GeneralCable/en-US/Resources/Glossary/",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
 
                 new Vocabulary()
@@ -59,50 +64,65 @@ namespace Catalogue.Data.Import.Mappings
                     Id = "http://www.snh.org.uk/publications/on-line/heritagemanagement/erosion/7.1.shtml",
                     Name = "SNH",
                     Description = "http://www.snh.org.uk/publications/on-line/heritagemanagement/erosion/7.1.shtml",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://evidence.environment-agency.gov.uk/FCERM/Libraries/Fluvial_Documents/Glossary.sflb.ashx",
                     Name = "EA",
                     Description = "http://evidence.environment-agency.gov.uk/FCERM/Libraries/Fluvial_Documents/Glossary.sflb.ashx",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://www.bgs.ac.uk/mineralsUK/glossary.html",
                     Name = "BGS",
                     Description = "http://www.bgs.ac.uk/mineralsUK/glossary.html",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms",
-                    Name = "WikiShipping",
+                    Name = "Wiki",
                     Description = "http://en.wikipedia.org/wiki/Glossary_of_nautical_terms",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://www.dtic.mil/doctrine/dod_dictionary/",
                     Name = "DOD",
                     Description = "http://www.dtic.mil/doctrine/dod_dictionary/",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://en.wikipedia.org/wiki/Glossary_of_fishery_terms",
                     Name = "WikiFish",
                     Description = "http://en.wikipedia.org/wiki/Glossary_of_fishery_terms",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
                 new Vocabulary()
                 {
                     Id = "http://www.enchantedlearning.com/wordlist/energy.shtml",
-                    Name = "Entergy",
+                    Name = "Energy",
                     Description = "http://www.enchantedlearning.com/wordlist/energy.shtml",
-                    Controlled = false //we may want to change this if we can get a defenitive list, or after import
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
                 },
+                new Vocabulary()
+                {
+                    Id = "http://jncc.gov.uk/human-activities/",
+                    Name = "Human Activities",
+                    Description = "http://www.enchantedlearning.com/wordlist/energy.shtml",
+                    Controlled = false, //we may want to change this if we can get a defenitive list, or after import
+                    Keywords = new List<VocabularyKeyword>()
+                }
             };
         }
 
@@ -124,8 +144,16 @@ namespace Catalogue.Data.Import.Mappings
                 Map(m => m.Path).Name("JNCC Location");
                 Map(m => m.TopCopy).ConvertUsing(row => false); // activities data is not top copy
                 Map(m => m.Status).ConvertUsing(row => Status.Internal); // activities data is not publishable
-                Map(m => m.Notes).Name("JNCC Notes");
-                Map(m => m.Validation).ConvertUsing(row => Validation.Gemini); //Validate to Gemini standard
+                Map(m => m.Notes).ConvertUsing(row =>
+                {
+                    var notes = new StringBuilder();
+                    notes.AppendLine(row.GetField("JNCC Notes"));
+                    notes.AppendLine();
+                    notes.AppendLine(row.GetField("Metadata comments"));
+
+                    return notes.ToString();
+                });
+                Map(m => m.Validation).ConvertUsing(row => Validation.Basic); //Maybe validate to Gemini standard
                 Map(m => m.Review).ConvertUsing<DateTime?>(row => null);
 
                 References<GeminiMap>(m => m.Gemini);
@@ -146,8 +174,21 @@ namespace Catalogue.Data.Import.Mappings
 
                 Map(m => m.Keywords).ConvertUsing(row =>
                     {
-                        string input = row.GetField("Keyword");
-                        return ParseKeywords(input);
+                        string keywordList = row.GetField("Keyword");
+                        var keywords = ParseKeywords(keywordList);
+
+                        string activity = row.GetField("Activity");
+                        if (!String.IsNullOrWhiteSpace(activity))
+                        {
+                            keywords.Add(new MetadataKeyword
+                            {
+                                Vocab = "http://jncc.gov.uk/human-activities/",
+                                Value = activity
+                            });
+                        }
+
+
+                        return keywords;
                     });
 
                 Map(m => m.TemporalExtent).ConvertUsing(row =>
@@ -172,7 +213,17 @@ namespace Catalogue.Data.Import.Mappings
                 Map(m => m.DatasetReferenceDate).ConvertUsing(row => row.GetField("Dataset reference date"));
                 Map(m => m.Lineage);
                 Map(m => m.ResourceLocator).Name("Web Address");
-//              Map(m => m.AdditionalInformationSource); // not present
+                Map(m => m.AdditionalInformationSource).ConvertUsing(row =>
+                {
+                    var additionalInfo = new StringBuilder();
+                    additionalInfo.AppendLine(row.GetField("Contact Position (job title/ generic role)"));
+                    additionalInfo.AppendLine();
+                    additionalInfo.AppendLine(row.GetField("Telephone number"));
+                    additionalInfo.AppendLine();
+                    additionalInfo.AppendLine(row.GetField("Address"));
+
+                    return additionalInfo.ToString();
+                });
                 Map(m => m.DataFormat).Name("Data format");
 
                 Map(m => m.ResponsibleOrganisation).ConvertUsing(row => new ResponsibleParty
@@ -187,10 +238,7 @@ namespace Catalogue.Data.Import.Mappings
                 Map(m => m.LimitationsOnPublicAccess).Name("Limitations on public access");
                 Map(m => m.UseConstraints).Name("Use constraints");
                 Map(m => m.SpatialReferenceSystem).Name("Spatial reference system");
-                Map(m => m.MetadataDate).ConvertUsing(row =>
-                {
-                    return ImportUtility.ParseDate(row.GetField("Metadata date"));
-                });
+                Map(m => m.MetadataDate).ConvertUsing(row => ImportUtility.ParseDate(row.GetField("Metadata date")));
                 Map(m => m.ResourceType).ConvertUsing(row => "dataset"); // only use dataset atm
 //                Map(m => m.MetadataLanguage); // Not available
                 Map(m => m.MetadataPointOfContact).ConvertUsing(row =>
@@ -230,6 +278,9 @@ namespace Catalogue.Data.Import.Mappings
         {
             var keywords = (from each in input.Split(',') // keywords are separated by commas
                             select ParseKeywordHelper(each)).ToList();
+
+            //hacky way of removing al the 
+            keywords.RemoveAll(x => String.IsNullOrWhiteSpace(x.Value));
             
             // add the broad category for activities (not included in the source data)
             keywords.Insert(0, new MetadataKeyword
@@ -243,13 +294,16 @@ namespace Catalogue.Data.Import.Mappings
                 Value = "Human Activities"
             });
 
+
             return keywords;
         }
 
         static MetadataKeyword ParseKeywordHelper(string s)
         {
             var vocabAndValue = (from x in s.Trim().Split(new [] {"::"}, StringSplitOptions.None)
+                                 
                                  select x.Trim()).ToList(); // vocab::value pairs are separated by two colons
+
 
             if (vocabAndValue.Count <= 1) // no vocab (just a value)
             {
@@ -308,8 +362,8 @@ namespace Catalogue.Data.Import.Mappings
             using (var db = store.OpenSession())
             {
                 var importer = Importer.CreateImporter<ActivitiesMapping>(db);
-                //importer.SkipBadRecords = true; // todo remove this
-                importer.Import(@"C:\Work\pressures-data\Human_Activities_Metadata_Catalogue.csv");
+                importer.SkipBadRecords = false; // todo remove this
+                importer.Import(@"C:\TopcatImports\Catalogue.csv");
                 db.SaveChanges();
 
                 imported = db.Query<Record>()
@@ -321,7 +375,7 @@ namespace Catalogue.Data.Import.Mappings
         [Test]
         public void should_import_every_record()
         {
-            imported.Count().Should().Be(97);
+            imported.Count().Should().Be(108);
         }
 
         [Test]
