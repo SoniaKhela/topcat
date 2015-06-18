@@ -31,6 +31,10 @@
     }
   };
 
+  _.mixin({
+    update: function(array, newer, matcher) {}
+  });
+
 }).call(this);
 
 //# sourceMappingURL=utilities.js.map

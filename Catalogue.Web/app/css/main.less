@@ -194,6 +194,21 @@ label {
 
 .search-keyword-suggestions {
     margin-bottom: 1em;
+    .search-keyword-suggestion {
+
+        &.ng-enter {
+            transition: 2.5s all;
+            opacity:0;
+            &.ng-enter-active { opacity: 1; }
+        }
+        &.ng-leave {
+            transition: 2.4s;
+            opacity: 1;
+            &.ng-leave-active { opacity: 0; }
+        }
+
+    }
+
 }
 
 .search-results-view-picker {

@@ -33,8 +33,8 @@
     </div>
 </div>
 
-<div class="search-keyword-suggestions" ng-show="keywordSuggestions[0]">
-    <span ng-repeat="k in keywordSuggestions">
+<div class="search-keyword-suggestions" >
+    <span ng-repeat="k in keywordSuggestions" class="search-keyword-suggestion">
         <span tc-tag vocab="{{k.vocab}}" ng-click="addKeywordToQuery(k)" class="pointable">
             <span ng-bind-html="k.value | highlight:query.q"></span>
         </span>

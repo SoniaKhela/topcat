@@ -33,7 +33,7 @@
         queryKeywords = (query) ->
             if query.q # don't want to query server with empty query
                 $http.get('../api/keywords?q=' + query.q)
-                    .success (result) -> $scope.keywordSuggestions = result
+                    .success (result) -> _.update $scope.keywordSuggestions, result
                     .error (e) -> $scope.notifications.add 'Oops! ' + e.message
             else
                 $q.defer() # return an empty promise
@@ -143,4 +143,6 @@
                 
         $scope.maxPages  = (total, pageLength) ->
             Math.ceil(total/pageLength)-1;
+            
+        
 

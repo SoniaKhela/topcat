@@ -39,7 +39,7 @@
                 $scope.vocabulator.selectedKeyword = { vocab: '', value: $scope.vocabulator.q }
                 clearCurrentVocab()
                 findVocabs()
-                findKeywords()            
+                findKeywords()
                 
         # when the model search value is updated, do the search
         $scope.$watch 'vocabulator.q', $scope.doFind

@@ -38,7 +38,7 @@
     queryKeywords = function(query) {
       if (query.q) {
         return $http.get('../api/keywords?q=' + query.q).success(function(result) {
-          return $scope.keywordSuggestions = result;
+          return _.update($scope.keywordSuggestions, result);
         }).error(function(e) {
           return $scope.notifications.add('Oops! ' + e.message);
         });
