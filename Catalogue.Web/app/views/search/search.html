@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="search-keyword-suggestions" >
+<div class="search-keyword-suggestions" ng-if="result.query">
     <span ng-repeat="k in keywordSuggestions" class="search-keyword-suggestion">
         <span tc-tag vocab="{{k.vocab}}" ng-click="addKeywordToQuery(k)" class="pointable">
             <span ng-bind-html="k.value | highlight:query.q"></span>
@@ -52,7 +52,7 @@
 <!--    </div>-->
 <!--</div>-->
 
-<div ng-show="result.query" class="search-results-header well well-sm">
+<div ng-if="result.query" class="search-results-header well well-sm">
 
     <div class="layout-row">
         <div class="layout-col">

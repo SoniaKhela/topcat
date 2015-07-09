@@ -145,15 +145,29 @@ label {
 .search-keyword-suggestions {
   margin-bottom: 1em;
 }
+.search-keyword-suggestions.ng-enter {
+  transition: 0.5s;
+  max-height: 0;
+}
+.search-keyword-suggestions.ng-enter.ng-enter-active {
+  max-height: 200px;
+}
+.search-keyword-suggestions.ng-leave {
+  transition: 0.2s;
+  max-height: 200px;
+}
+.search-keyword-suggestions.ng-leave.ng-leave-active {
+  max-height: 0;
+}
 .search-keyword-suggestions .search-keyword-suggestion.ng-enter {
-  transition: 2.5s all;
+  transition: 0.5s;
   opacity: 0;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-enter.ng-enter-active {
   opacity: 1;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-leave {
-  transition: 2.4s;
+  transition: 0.5s;
   opacity: 1;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-leave.ng-leave-active {
@@ -173,6 +187,20 @@ label {
 }
 .search-results-header .search-results-header-tagged > span:last-child {
   margin-right: 0.2em;
+}
+.search-results-header.ng-enter {
+  transition: 0.5s;
+  max-height: 0;
+}
+.search-results-header.ng-enter.ng-enter-active {
+  max-height: 150px;
+}
+.search-results-header.ng-leave {
+  transition: 0.2s;
+  max-height: 150px;
+}
+.search-results-header.ng-leave.ng-leave-active {
+  max-height: 0;
 }
 .search-open-vocabulator {
   margin: -3px 0.5em 0 0.5em;

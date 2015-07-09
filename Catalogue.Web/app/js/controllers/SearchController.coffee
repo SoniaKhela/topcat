@@ -8,7 +8,7 @@
         $timeout (-> $scope.app.starting = false), 500
         
         $scope.result = results: {}     # the search results
-        $scope.result = results: {}     # the search results
+        $scope.keywordSuggestions = []  # the keyword suggestions
         $scope.current = {}             # the currently selected, zoomed and top result
         $scope.pageSize = 15            # the paging size (todo: why is there on the scope?)
         $scope.vocabulator = {}         # vocabulator scope to save state between modal instances
@@ -33,7 +33,7 @@
         queryKeywords = (query) ->
             if query.q # don't want to query server with empty query
                 $http.get('../api/keywords?q=' + query.q)
-                    .success (result) -> _.update $scope.keywordSuggestions, result
+                    .success (result) -> _.updateArrayWithNewContent $scope.keywordSuggestions, result
                     .error (e) -> $scope.notifications.add 'Oops! ' + e.message
             else
                 $q.defer() # return an empty promise

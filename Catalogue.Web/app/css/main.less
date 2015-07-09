@@ -194,19 +194,9 @@ label {
 
 .search-keyword-suggestions {
     margin-bottom: 1em;
+    .animate-with-slide-down(200px);
     .search-keyword-suggestion {
-
-        &.ng-enter {
-            transition: 2.5s all;
-            opacity:0;
-            &.ng-enter-active { opacity: 1; }
-        }
-        &.ng-leave {
-            transition: 2.4s;
-            opacity: 1;
-            &.ng-leave-active { opacity: 0; }
-        }
-
+        .animate-with-fade;
     }
 
 }
@@ -225,6 +215,7 @@ label {
         >span:first-child { margin-left:0.2em; }
         >span:last-child { margin-right:0.2em; }
     }
+    .animate-with-slide-down(150px);
 }
 
 .search-open-vocabulator { margin: -3px 0.5em 0 0.5em; }
@@ -621,6 +612,38 @@ form .ng-invalid {
 }
 
 
+.animate-with-fade(@delay: 0.5s) {
+    &.ng-enter {
+        transition: @delay; opacity: 0; 
+        &.ng-enter-active { opacity: 1; }
+    }
+    &.ng-leave {
+        transition: @delay; opacity: 1;
+        &.ng-leave-active { opacity: 0; }
+    }
+}
+
+.animate-with-slide-down(@maxHeight) {
+    &.ng-enter {
+        transition: 0.5s; max-height:0;
+        &.ng-enter-active { max-height: @maxHeight; }
+    }
+    &.ng-leave {
+        transition: 0.2s; max-height: @maxHeight;
+        &.ng-leave-active { max-height: 0; }
+    }
+}
+
+.animate-with-slide-right(@maxWidth) {
+    &.ng-enter {
+        transition: 0.5s; max-height:0;
+        &.ng-enter-active { max-height: @maxHeight; }
+    }
+    &.ng-leave {
+        transition: 0.2s; max-height: @maxHeight;
+        &.ng-leave-active { max-height: 0; }
+    }
+}
 
 
 // Create boxes for clicking on for use in the data formats

@@ -27,15 +27,18 @@ String.prototype.hashCode = () ->
 
 # extend lodash to easily provide globally-accessible utility functions
 
-# Updates the array to match the contents of the second array
-# using the matcher function to determine identity.
-# the important thing is that the *contents* of the array is updated
-# and that any existing matching objects are not replaced
-_.mixin update: (array, newer, matcher) ->
-    
-    # pairs of (old, new) items
-    #existing = (o, n for n in newer when
-    #newer.forEach (item) ->
-    #    if matcher item, 
-        
+# Updates the array to match the contents of the newer array.
+# The *contents* of the array is updated and any existing
+# (by deep comparison) objects are not replaced.
+_.mixin updateArrayWithNewContent: (array, newer) ->
+    copy = array.slice() 
+    array.length = 0;
+    _.forEach newer, (item) ->
+        # add the item, unless it matches an old item
+        # in which case add the old item
+        old = _.findWhere copy, item
+        if old
+            array.push old
+        else
+            array.push item
         

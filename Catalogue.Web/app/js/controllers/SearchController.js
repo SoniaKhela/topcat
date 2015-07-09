@@ -12,9 +12,7 @@
     $scope.result = {
       results: {}
     };
-    $scope.result = {
-      results: {}
-    };
+    $scope.keywordSuggestions = [];
     $scope.current = {};
     $scope.pageSize = 15;
     $scope.vocabulator = {};
@@ -38,7 +36,7 @@
     queryKeywords = function(query) {
       if (query.q) {
         return $http.get('../api/keywords?q=' + query.q).success(function(result) {
-          return _.update($scope.keywordSuggestions, result);
+          return _.updateArrayWithNewContent($scope.keywordSuggestions, result);
         }).error(function(e) {
           return $scope.notifications.add('Oops! ' + e.message);
         });

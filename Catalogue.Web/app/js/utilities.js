@@ -32,7 +32,20 @@
   };
 
   _.mixin({
-    update: function(array, newer, matcher) {}
+    updateArrayWithNewContent: function(array, newer) {
+      var copy;
+      copy = array.slice();
+      array.length = 0;
+      return _.forEach(newer, function(item) {
+        var old;
+        old = _.findWhere(copy, item);
+        if (old) {
+          return array.push(old);
+        } else {
+          return array.push(item);
+        }
+      });
+    }
   });
 
 }).call(this);
