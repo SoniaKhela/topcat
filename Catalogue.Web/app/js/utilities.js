@@ -34,6 +34,10 @@
   _.mixin({
     updateArrayWithNewContent: function(array, newer) {
       var copy;
+      if (!array) {
+        return;
+      }
+      console.log(array);
       copy = array.slice();
       array.length = 0;
       return _.forEach(newer, function(item) {

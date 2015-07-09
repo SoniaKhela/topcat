@@ -194,9 +194,9 @@ label {
 
 .search-keyword-suggestions {
     margin-bottom: 1em;
-    .animate-with-slide-down(200px);
     .search-keyword-suggestion {
-        .animate-with-fade;
+        .animate-with-fade(4s);
+        // not working? .animate-with-slide-down(30px)
     }
 
 }
@@ -625,7 +625,7 @@ form .ng-invalid {
 
 .animate-with-slide-down(@maxHeight) {
     &.ng-enter {
-        transition: 0.5s; max-height:0;
+        transition: 1.5s; max-height:0;
         &.ng-enter-active { max-height: @maxHeight; }
     }
     &.ng-leave {
@@ -636,12 +636,12 @@ form .ng-invalid {
 
 .animate-with-slide-right(@maxWidth) {
     &.ng-enter {
-        transition: 0.5s; max-height:0;
-        &.ng-enter-active { max-height: @maxHeight; }
+        transition: 1.5s; max-width:0;
+        &.ng-enter-active { max-width: @maxWidth; }
     }
     &.ng-leave {
-        transition: 0.2s; max-height: @maxHeight;
-        &.ng-leave-active { max-height: 0; }
+        transition: 0.2s; max-width: @maxWidth;
+        &.ng-leave-active { max-width: 0; }
     }
 }
 

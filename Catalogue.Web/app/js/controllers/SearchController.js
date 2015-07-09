@@ -54,11 +54,11 @@
         return $q.all([keywordsPromise, recordsPromise])["finally"](function() {
           $scope.busy.stop();
           if (!$scope.result.query.q) {
-            return $scope.keywordSuggestions = {};
+            return $scope.keywordSuggestions = [];
           }
         });
       } else {
-        $scope.keywordSuggestions = {};
+        $scope.keywordSuggestions = [];
         return $scope.result = {};
       }
     };

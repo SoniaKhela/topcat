@@ -51,9 +51,9 @@
                     .finally ->
                         $scope.busy.stop()
                         if !$scope.result.query.q
-                            $scope.keywordSuggestions = {}
+                            $scope.keywordSuggestions = []
             else
-                $scope.keywordSuggestions = {}
+                $scope.keywordSuggestions = []
                 $scope.result = {}
                 
         blankQuery = ->

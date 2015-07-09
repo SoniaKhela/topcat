@@ -33,13 +33,13 @@
     </div>
 </div>
 
-<div class="search-keyword-suggestions" ng-if="result.query">
+<div class="search-keyword-suggestions" ng-if="result.query.q">
     <span ng-repeat="k in keywordSuggestions" class="search-keyword-suggestion">
         <span tc-tag vocab="{{k.vocab}}" ng-click="addKeywordToQuery(k)" class="pointable">
             <span ng-bind-html="k.value | highlight:query.q"></span>
         </span>
     </span>
-    <button ng-show="!result.query.k[0]" class="search-open-vocabulator btn btn-sm btn-dialogue" tc-tip title="Add tags (keywords) to query" ng-click="openVocabulator()">
+    <button class="search-open-vocabulator btn btn-sm btn-dialogue" tc-tip title="Add tags (keywords) to query" ng-click="openVocabulator()">
         &bull;&bull;&bull;
     </button>
 </div>

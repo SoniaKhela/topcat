@@ -31,6 +31,8 @@ String.prototype.hashCode = () ->
 # The *contents* of the array is updated and any existing
 # (by deep comparison) objects are not replaced.
 _.mixin updateArrayWithNewContent: (array, newer) ->
+    return if !array
+    console.log array
     copy = array.slice() 
     array.length = 0;
     _.forEach newer, (item) ->
