@@ -144,20 +144,21 @@ label {
 }
 .search-keyword-suggestions {
   margin-bottom: 1em;
+  height: 3.6em;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-enter {
-  transition: 4s;
-  opacity: 0;
+  transition: 2s;
+  width: 100%;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-enter.ng-enter-active {
-  opacity: 1;
+  width: 0;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-leave {
-  transition: 4s;
-  opacity: 1;
+  transition: 2s;
+  width: 0;
 }
 .search-keyword-suggestions .search-keyword-suggestion.ng-leave.ng-leave-active {
-  opacity: 0;
+  width: 100%;
 }
 .search-results-view-picker button span {
   font-size: smaller;
@@ -173,20 +174,6 @@ label {
 }
 .search-results-header .search-results-header-tagged > span:last-child {
   margin-right: 0.2em;
-}
-.search-results-header.ng-enter {
-  transition: 1.5s;
-  max-height: 0;
-}
-.search-results-header.ng-enter.ng-enter-active {
-  max-height: 150px;
-}
-.search-results-header.ng-leave {
-  transition: 0.2s;
-  max-height: 150px;
-}
-.search-results-header.ng-leave.ng-leave-active {
-  max-height: 0;
 }
 .search-open-vocabulator {
   margin: -3px 0.5em 0 0.5em;
