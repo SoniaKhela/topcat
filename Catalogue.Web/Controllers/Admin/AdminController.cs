@@ -34,7 +34,7 @@ namespace Catalogue.Web.Controllers.Admin
         [HttpGet, Route("api/admin/seepath")]
         public bool SeePath(string path)
         {
-            return Directory.Exists(path);
+            return Directory.Exists(path) || File.Exists(path);
         }
     }
 }
