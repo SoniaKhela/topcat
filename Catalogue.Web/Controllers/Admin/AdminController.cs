@@ -32,9 +32,9 @@ namespace Catalogue.Web.Controllers.Admin
         }
 
         [HttpGet, Route("api/admin/seepath")]
-        public bool SeePath()
+        public bool SeePath(string path)
         {
-            return Directory.Exists(@"C:\topcat");
+            return Directory.Exists(path);
         }
     }
 }
