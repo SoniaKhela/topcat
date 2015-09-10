@@ -49,14 +49,14 @@ namespace Catalogue.Web.Controllers.Export
                             while (await enumerator.MoveNextAsync())
                             {
                                 var writer = new StringWriter();
-                                var exporter = new Exporter();
+                                var exporter = new Exporter(writer);
                                 if (writeHeaders)
                                 {
-                                    exporter.ExportHeader(writer);
+                                    exporter.ExportHeader();
                                     writeHeaders = false;
                                 }
 
-                                exporter.ExportRecord(enumerator.Current.Document, writer);
+                                exporter.ExportRecord(enumerator.Current.Document);
                                 var data = UTF8Encoding.UTF8.GetBytes(writer.ToString());
 
                                 await stream.WriteAsync(data, 0, data.Length);

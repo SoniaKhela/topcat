@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CsvHelper.2.11.1.1\lib\net40-client\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.2.13.2.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.2.0.1\lib\net45\FluentAssertions.dll</HintPath>
@@ -79,7 +79,6 @@
   <ItemGroup>
     <Compile Include="Analyzers\NGramAnalyzer.cs" />
     <Compile Include="DatabaseFactory.cs" />
-    <Compile Include="Exchange\TopcatExchangeFormat.cs" />
     <Compile Include="Export\Exporter.cs" />
     <Compile Include="Import\CsvHelperHelpers.cs" />
     <Compile Include="Import\FileSystem.cs" />
@@ -136,9 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Exchange\topcat-export-20150514-112832.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
