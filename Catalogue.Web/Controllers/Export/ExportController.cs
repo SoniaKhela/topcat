@@ -7,9 +7,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web.Http;
+using System.Xml.Linq;
 using Catalogue.Data.Export;
 using Catalogue.Data.Model;
 using Catalogue.Data.Query;
+using Catalogue.Gemini.Encoding;
 using Catalogue.Utilities.Clone;
 using Newtonsoft.Json;
 using Raven.Client;
@@ -27,14 +29,20 @@ namespace Catalogue.Web.Controllers.Export
             this.recordQueryer = recordQueryer;
         }
 
-        /// <summary>
-        /// Exports a csv file of records using the standard export format. 
-        /// Ignores the paging parameter P and size parameter N
-        /// </summary>
-        public HttpResponseMessage Get([FromUri] RecordQueryInputModel input)
+        void RemovePagingParametersFromRecordQuery(RecordQueryInputModel input)
         {
             input.P = 0;
             input.N = -1; 
+        }
+
+        /// <summary>
+        /// Exports a csv file of records using the standard export format. 
+        /// Ignores the paging parameters P and N.
+        /// </summary>
+        public HttpResponseMessage Get([FromUri] RecordQueryInputModel input)
+        {
+            RemovePagingParametersFromRecordQuery(input);
+
             using (var adb = _db.Advanced.DocumentStore.OpenAsyncSession())
             {
                 var response = new HttpResponseMessage();
@@ -72,6 +80,32 @@ namespace Catalogue.Web.Controllers.Export
 
                 return response;
             }
+        }
+
+
+        /// <summary>
+        /// Exports an ISO XML file of records.
+        /// </summary>
+        [HttpGet, Route("api/export/xml")]
+        public HttpResponseMessage Xml([FromUri] RecordQueryInputModel input)
+        {
+            RemovePagingParametersFromRecordQuery(input);
+
+            var records = recordQueryer.RecordQuery(input);
+
+            // todo use raven streaming or will clip results
+            //adb.Advanced.StreamAsync(recordQueryer.AsyncRecordQuery(adb,input))
+
+
+            // encode the records as iso xml elements
+            var elements = from record in records
+                           let doc = new XmlEncoder().Create(record.Id, record.Gemini)
+                           select doc.Root;
+
+            var output = new XDocument(new XElement("topcat-export", elements)).ToString();
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(output) };
+            return result;
         }
     }
 }
