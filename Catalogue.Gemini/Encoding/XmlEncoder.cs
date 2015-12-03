@@ -234,6 +234,8 @@ namespace Catalogue.Gemini.Encoding
                 new XElement(gmd + "MD_DigitalTransferOptions",
                     new XElement(gmd + "onLine",
                         new XElement(gmd + "CI_OnlineResource",
+                            new XElement(gmd + "name",
+                                new XElement(gco + "CharacterString", "Dataset")),
                             new XElement(gmd + "linkage",
                                 new XElement(gmd + "URL", metadata.ResourceLocator))))));
         }
