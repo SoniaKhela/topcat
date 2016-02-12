@@ -541,18 +541,29 @@
 
             <div class="editor-status layout-row">
                 <div class="layout-col">
-                    <span>Status</span>
+                    <span>Publication</span>
                 </div>
                 <div class="layout-col pull-right">
 
-                    <button type="button" class="btn"
-                            ng-click="form.status = (form.status + 1) % 2"
-                            ng-class="{ 'btn-default': form.status != 1, 'btn-danger': form.status == 1 }"
-                            title="Is the resource for internal use only, or is it for publishing externally?"
-                            tc-tip>
-                        <span class="glyphicon glyphicon-repeat"></span>
-                        {{ form.status == 0 ? 'Internal' : 'Publishable' }}
-                    </button>
+
+                    <div class="btn-group" ng-click="editPublication()">
+                        <button ng-if="!form.publication" class="btn btn-default">
+                            <span class="glyphicon glyphicon-flash"></span>None
+                        </button>
+                        <button ng-if="form.publication" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-repeat"></span>Yes
+                        </button>
+                    </div>
+
+
+<!--                    <button type="button" class="btn"-->
+<!--                            ng-click="form.status = (form.status + 1) % 2"-->
+<!--                            ng-class="{ 'btn-default': form.status != 1, 'btn-danger': form.status == 1 }"-->
+<!--                            title="Is the resource for internal use only, or is it for publishing externally?"-->
+<!--                            tc-tip>-->
+<!--                        <span class="glyphicon glyphicon-repeat"></span>-->
+<!--                        {{ form.status == 0 ? 'Internal' : 'Publishable' }}-->
+<!--                    </button>-->
 
                 </div>
             </div>
@@ -644,6 +655,6 @@
     </div>
 
 
-<!--    <pre>{{form}}</pre>-->
+    <pre>{{form}}</pre>
     </div>
 </div>

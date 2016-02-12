@@ -1,7 +1,11 @@
 ﻿[
   {
-    "outputFile": "app/js/controllers/IngestController.js",
-    "inputFile": "app/js/controllers/IngestController.coffee"
+    "outputFile": "app/js/controllers/EditorController.js",
+    "inputFile": "app/js/controllers/EditorController.coffee"
+  },
+  {
+    "outputFile": "app/js/controllers/PublicatorController.js",
+    "inputFile": "app/js/controllers/PublicatorController.coffee"
   },
   {
     "outputFile": "app/js/app.js",

@@ -108,7 +108,17 @@
                 resolve:     'markdown': -> $scope.form.gemini.abstract
             modal.result
                 .then (s) -> $scope.form.gemini.abstract = s
-            
+
+        $scope.editPublication = ->
+            modal = $modal.open
+                controller:  'PublicatorController'
+                templateUrl: 'views/partials/publicator.html?' + new Date().getTime() # stop iis express caching the html
+                size:        'lg'
+                scope:       $scope
+                #resolve:     'markdown': -> $scope.form.gemini.abstract
+            #modal.result
+            #    .then (s) -> $scope.form.publication.abstract = s
+                        
         $scope.removeExtent = (extent) ->
             $scope.form.gemini.extent.splice ($.inArray extent, $scope.form.gemini.extent), 1
         $scope.addExtent = ->

@@ -402,17 +402,17 @@ label {
     color: black;
 }
 
-
-// -----------
-// vocabulator
-// -----------
-// make the modal big!
+// make the big modals bigger!
 @media (min-width: 992px) {
   .modal-lg { width: 900px; }
 }
 @media (min-width: 1200px) {
   .modal-lg { width: 1100px; }
 }
+
+// -----------
+// vocabulator
+// -----------
 .vocabulator {
     @height: 50vh;
     padding: 1em;
@@ -490,6 +490,25 @@ label {
         .vocabulator-new-uncontrolled-keyword {
             height: @height;
             overflow-y: scroll;
+        }
+    }
+}
+
+// -----------
+// vocabulator
+// -----------
+.publicator {
+    @height: 50vh;
+    padding: 1em;
+    h3 { margin: 0.3em 0 0.8em 0; }
+    .close { margin-top: -0.8em; } // vertically position the close 'x' button
+    .publicator-tabs {
+        .tab-content {
+            margin-top: 1.5em;
+        }
+        .publicator-publish-this {
+            margin: 4em 0 4em 0;
+            text-align: center;
         }
     }
 }

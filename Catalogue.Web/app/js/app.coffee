@@ -63,6 +63,9 @@ module.config ($routeProvider) ->
         .when '/sandbox/vocabulator', # for developing the vocabulator modal more easily
             controller:     'VocabulatorController',
             templateUrl:    'views/partials/vocabulator.html'
+        .when '/sandbox/publicator', # for developing the publicator modal more easily
+            controller:     'PublicatorController',
+            templateUrl:    'views/partials/publicator.html'
         .when '/sandbox/markdown', # for developing the markdown modal more easily
             controller:     'MarkdownController',
             templateUrl:    'views/partials/markdown.html'

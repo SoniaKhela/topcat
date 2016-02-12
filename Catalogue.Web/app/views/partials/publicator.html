@@ -1,0 +1,48 @@
+﻿
+
+
+<div class="publicator modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+
+
+        <div ng-if="!form.publication">
+            <h2>This dataset is not currently published anywhere</h2>
+            <br />
+        </div>
+
+        <div class="publicator-tabs" tabset>
+
+            <div tab>
+                <tab-heading>
+                    <span class="glyphicon glyphicon-circle-arrow-up"></span> Open Data
+                </tab-heading>
+
+                <div ng-if="!form.publication.openData" class="publicator-publish-this">
+                    <button type="button" class="btn btn-primary" ng-click="publishAsOpenData()">Publish as Open Data</button>
+                </div>
+                <div ng-if="form.publication.openData">
+
+
+                    Stuff
+                    <br />
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        </div>
+
+    <div class="modal-footer">
+        <span class="pull-left">
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">CANCEL</button>
+        </span>
+    </div>
+</div>

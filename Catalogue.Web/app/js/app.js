@@ -69,6 +69,9 @@
     }).when('/sandbox/vocabulator', {
       controller: 'VocabulatorController',
       templateUrl: 'views/partials/vocabulator.html'
+    }).when('/sandbox/publicator', {
+      controller: 'PublicatorController',
+      templateUrl: 'views/partials/publicator.html'
     }).when('/sandbox/markdown', {
       controller: 'MarkdownController',
       templateUrl: 'views/partials/markdown.html',
