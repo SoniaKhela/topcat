@@ -9,11 +9,15 @@ Licensed under [Open Government Licence v2](http://www.nationalarchives.gov.uk/d
 Development
 -----------
 
-###Web Essentials
-Install the Visual Studio Web Essentials extensions pack (and now the "Web Compiler" extension) for design-time support for CoffeeScript (.coffee) and LESS (.less). These are essential if you want to edit the application's Javascript or CSS.
+###Web Compiler
+There are no build-time or run-time steps used to compile Coffeescript and LESS.The application will expect the correct .js and .css files to have been design-time generated.
 
-There are no build-time or run-time steps used to compile Coffeescript and LESS - the Visual Studio extensions are simpler.
-The application will expect the correct .js and .css files to have been design-time generated.
+Originally we used the Visual Studio Web Essentials extension; now the "Web Compiler" extension for design-time support for CoffeeScript (.coffee) and LESS (.less). 
+
+https://visualstudiogallery.msdn.microsoft.com/3b329021-cd7a-4a01-86fc-714c2d05bb6c
+
+If you don't have this installed, changes to coffeescript and less files will not occur. This isn't ideal any more, since you now have to explicitly add files to be compiled to the compilerconfig.json file (by using the contect menu).
+
 
 ###AngularJS
 There is (allegedly) [Resharper support](http://blogs.jetbrains.com/dotnet/2013/02/angularjs-support-for-resharper/).

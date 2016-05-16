@@ -14,5 +14,9 @@
   {
     "outputFile": "app/css/main.css",
     "inputFile": "app/css/main.less"
+  },
+  {
+    "outputFile": "app/js/services.js",
+    "inputFile": "app/js/services.coffee"
   }
 ]

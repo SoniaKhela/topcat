@@ -61,11 +61,12 @@ module.config ($routeProvider) ->
             controller:     'SandboxController',
             templateUrl:    'views/sandbox/lookups.html'
         .when '/sandbox/vocabulator', # for developing the vocabulator modal more easily
-            controller:     'VocabulatorController',
+            controller:     'VocabulatorControllerX',
             templateUrl:    'views/partials/vocabulator.html'
         .when '/sandbox/publicator', # for developing the publicator modal more easily
             controller:     'PublicatorController',
             templateUrl:    'views/partials/publicator.html'
+            resolve:        'record': (DevTimeRecordLoader) -> DevTimeRecordLoader()
         .when '/sandbox/markdown', # for developing the markdown modal more easily
             controller:     'MarkdownController',
             templateUrl:    'views/partials/markdown.html'
@@ -81,7 +82,6 @@ module.config ($routeProvider) ->
             templateUrl:    'views/partials/presentation.html'
         .otherwise
             redirectTo:     '/'
-
 
 # just playing....
 module.animation '.my-special-animation', ->

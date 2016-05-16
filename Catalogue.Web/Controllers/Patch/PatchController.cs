@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Catalogue.Data;
 using Catalogue.Data.Indexes;
 using Catalogue.Data.Query;
 using Catalogue.Gemini.BoundingBoxes;
@@ -12,6 +13,7 @@ using Catalogue.Gemini.Spatial;
 using Catalogue.Utilities.Clone;
 using Catalogue.Utilities.Time;
 using Catalogue.Web.Injection;
+using Raven.Abstractions.Data;
 using Raven.Client;
 
 namespace Catalogue.Web.Controllers.Patch
@@ -222,15 +224,29 @@ namespace Catalogue.Web.Controllers.Patch
             return new HttpResponseMessage();
         }
 
+        [HttpPost, Route("api/patch/removeobsoleteproperties")]
+        public HttpResponseMessage RemoveObsoleteProperties()
+        {
+            var tagName = "Records";
+            var script = "delete this.TopCopy;";
+            var operation = WebApiApplication.DocumentStore.DatabaseCommands //.ForDatabase("topcat")
+                    .UpdateByIndex("Raven/DocumentsByEntityName",
+                            new IndexQuery { Query = $"Tag:{tagName}" },
+                            new ScriptedPatchRequest { Script = script },
+                            new BulkOperationOptions { AllowStale = true });
+            operation.WaitForCompletion();
+            return new HttpResponseMessage();
+        }
 
-//        [HttpPost, Route("api/patch/renamesecuritylevels")]
-//        public HttpResponseMessage RenameSecurityLevels()
-//        {
-////            db.Advanced.DocumentStore.DatabaseCommands.Patch(
-//
-////            db.SaveChanges();
-////
-////            return new HttpResponseMessage();
-//        }
+
+        //        [HttpPost, Route("api/patch/renamesecuritylevels")]
+        //        public HttpResponseMessage RenameSecurityLevels()
+        //        {
+        ////            db.Advanced.DocumentStore.DatabaseCommands.Patch(
+        //
+        ////            db.SaveChanges();
+        ////
+        ////            return new HttpResponseMessage();
+        //        }
     }
 }

@@ -44,6 +44,16 @@ module.factory 'RecordCloner', (Record, $route, $q) ->
             () -> d.reject 'Unable to fetch a clone of record ' + $route.current.params.recordId
         d.promise
 
+module.factory 'DevTimeRecordLoader', (Record, $route, $q) ->
+    () ->
+        d = $q.defer()
+        Record.get
+            id: '58fbee5e-58e6-4119-82cb-587ec383cb62', # just a seeded record
+            (record) -> d.resolve record,
+            () -> d.reject 'Unable to fetch dev-time record'
+        d.promise
+
+
 # just currently using this for a spike in SandboxController
 module.factory 'Formats', ($http, $q) ->
     d = $q.defer()
