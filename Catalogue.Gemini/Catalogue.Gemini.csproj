@@ -69,6 +69,7 @@
     <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\Vocabulary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quality\GranularityChecker.cs" />
     <Compile Include="ResourceType\ResourceTypes.cs" />
     <Compile Include="Roles\ResponsiblePartyRoles.cs" />
     <Compile Include="Spatial\BoundingBoxUtility.cs" />
